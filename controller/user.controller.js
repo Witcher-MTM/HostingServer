@@ -1,6 +1,6 @@
-const { User } = require("../db/index")
+const { User, Category, DefaultCategory } = require("../db/index")
 const db = require("../db")
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 class UserController {
     async getUsers(req, res) {
         await User.findAll()
@@ -28,6 +28,18 @@ class UserController {
                 password: Hashpassword,
                 isConfirmed: isConfirmed ?? false
             })
+            const default_categories = await DefaultCategory.findAll()
+                for(const default_category of default_categories){
+                    Category.create({
+                        user_id:result.id,
+                        name:default_category.name,
+                        image_link:default_category.image_link,
+                        image_color:default_category.image_color,
+                        color:default_category.color,
+                        lastUsed:null,
+                        isIncome:default_category.isIncome
+                    })
+                }
             if(isLocal){
                 return result
             }
