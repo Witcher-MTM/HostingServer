@@ -95,7 +95,7 @@ class AccountController {
         const { user_id, name, cash } =
             req.body
         try {
-            Account.update(
+            await Account.update(
                 {
                     user_id: user_id ?? db.sequelize.literal("user_id"),
                     name: name ?? db.sequelize.literal("name"),
