@@ -106,8 +106,9 @@ class AccountController {
                         id: req.params.account_id,
                     },
                 }
-            )
-            return res.status(200).send("Account with ID: " + req.params.account_id + " was changed successful")
+            ).then(()=>{
+                return res.status(200).send("Account with ID: " + req.params.account_id + " was changed successful")
+            })
         } catch (err) {
             return res.status(400).send(err.message)
         }
