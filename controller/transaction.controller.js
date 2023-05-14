@@ -6,32 +6,34 @@ class TransactionController {
   async getTransactions(req, res) {
     const combinedTransactions = []
     try {
-      const result = await Transaction.findAll()
-      const categories = await CategoryController.getCategories(req, res, true)
-      if (!categories) {
-        throw new Error('Categories not found')
-      }
-      for (const transaction of result) {
-        for (const category of categories) {
-          if (transaction.category_id === category.id) {
-            const formattedDate = FormattedDate.toDate(transaction.date)
-            combinedTransactions.push({
-              'x': category.name,
-              'y': transaction.cash,
-              'fill': category.color,
-              'id': transaction.id,
-              'comment': transaction.comment,
-              'image_link': category.image_link,
-              'image_color': category.image_color,
-              'isIncome': transaction.isIncome,
-              'date': formattedDate,
-              'category_id': category.id
-            })
+      const result = await Transaction.findAll().then(async()=>{
+        const categories = await CategoryController.getCategories(req, res, true).then(()=>{
+          if (!categories) {
+            throw new Error('Categories not found')
           }
-        }
-      }
-
-      return res.status(200).send(combinedTransactions)
+          for (const transaction of result) {
+            for (const category of categories) {
+              if (transaction.category_id === category.id) {
+                const formattedDate = FormattedDate.toDate(transaction.date)
+                combinedTransactions.push({
+                  'x': category.name,
+                  'y': transaction.cash,
+                  'fill': category.color,
+                  'id': transaction.id,
+                  'comment': transaction.comment,
+                  'image_link': category.image_link,
+                  'image_color': category.image_color,
+                  'isIncome': transaction.isIncome,
+                  'date': formattedDate,
+                  'category_id': category.id
+                })
+              }
+            }
+          }
+        })
+      }).then(()=>{
+        return res.status(200).send(combinedTransactions)
+      })
     } catch (err) {
       return res.status(400).send(err.message)
     }
