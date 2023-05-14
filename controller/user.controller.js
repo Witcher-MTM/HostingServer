@@ -30,7 +30,7 @@ class UserController {
             })
             const default_categories = await DefaultCategory.findAll()
                 for(const default_category of default_categories){
-                    Category.create({
+                    await Category.create({
                         user_id:result.id,
                         name:default_category.name,
                         image_link:default_category.image_link,
