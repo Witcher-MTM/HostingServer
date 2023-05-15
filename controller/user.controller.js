@@ -1,4 +1,4 @@
-const { User, Category, DefaultCategory } = require("../db/index")
+const { User, Category, DefaultCategory, Account } = require("../db/index")
 const db = require("../db")
 const bcrypt = require("bcrypt");
 class UserController {
@@ -40,6 +40,11 @@ class UserController {
                         isIncome:default_category.isIncome
                     })
                 }
+            await Account.create({
+                user_id:result.id,
+                name:"Total",
+                cash:0
+            })
             if(isLocal){
                 return result
             }
