@@ -13,17 +13,19 @@ class CategoryController {
                     [Op.not]: "tmp"
                 }
             }
-        }).then((result) => {
-            if (local) {
-                return result;
-            } else {
-                return res.status(200).send(result);
-            }
         }).catch((err) => {
             return res.status(400).send(err.message);
         })
-        console.log(`end getCategories at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
-        console.log(logger.regexSymbol('-', 50), "info")
+            if (local) {
+                console.log(`end getCategories at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
+                console.log(logger.regexSymbol('-', 50), "info")
+                return result;
+            } else {
+                console.log(`end getCategories at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
+                console.log(logger.regexSymbol('-', 50), "info")
+                return res.status(200).send(result);
+            }
+        
     }
     async addCategory(req, res) {
         console.log(logger.regexSymbol('-', 50), "info")
