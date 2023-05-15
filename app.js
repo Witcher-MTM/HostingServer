@@ -21,6 +21,8 @@ const AuthRoute = require('./routes/auth.route')
 const TMPAccount = require('./routes/TMP.route')
 
 
+
+
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors())

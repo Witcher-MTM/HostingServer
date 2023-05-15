@@ -10,6 +10,13 @@ class FormattedDate {
         }
         return dateString
     }
+    toDateTimeSeconds(dateString) {
+        const date = new Date(dateString);
+        if (date.toString() !== "Invalid Date") {
+          return date.toISOString().replace(/[T:]/g, " ");
+        }
+        return dateString;
+      }
 }
 
 module.exports = new FormattedDate();
