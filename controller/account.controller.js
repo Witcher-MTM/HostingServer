@@ -44,9 +44,10 @@ class AccountController {
                 return res.status(400).send(err.message)
             })
         console.log(`end getAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
-
+        console.log(logger.regexSymbol('-', 50), "info")
     }
     async getAccountsByUserID(req, res) {
+        console.log(logger.regexSymbol('-', 50), "info")
         console.log(`start getAccountsByUserID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
 
         await Account.findAll({
@@ -70,8 +71,10 @@ class AccountController {
                 return res.status(400).send(err.message)
             })
         console.log(`end getAccountsByUserID at ${FomrattedDate.toDateTimeSeconds(new Date())} `, "info")
+        console.log(logger.regexSymbol('-', 50), "info")
     }
     async addAccounts(req, res) {
+        console.log(logger.regexSymbol('-', 50), "info")
         console.log(`start addAccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
         const { user_id, name, cash } = req.body
         console.log(`take info from body at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
@@ -88,9 +91,10 @@ class AccountController {
             return res.status(400).send(err.message)
         })
         console.log(`end addAccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
-
+        console.log(logger.regexSymbol('-', 50), "info")
     }
     async deleteAccountByID(req, res) {
+        console.log(logger.regexSymbol('-', 50), "info")
         console.log(`start deleteAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
         await Account.destroy({
             where: {
@@ -120,10 +124,13 @@ class AccountController {
                 console.log(`send error message: ${err.message} at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "error")
                 return res.status(400).send(err.message)
             })
+            
         console.log(`end deleteAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
+        console.log(logger.regexSymbol('-', 50), "info")
 
     }
     async patchAccountByID(req, res) {
+        console.log(logger.regexSymbol('-', 50), "info")
         console.log(`start patchAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
         const { user_id, name, cash } = req.body
 
@@ -146,6 +153,7 @@ class AccountController {
             return res.status(400).send(err.message)
         })
         console.log(`end patchAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
+        console.log(logger.regexSymbol('-', 50), "info")
     }
 }
 
