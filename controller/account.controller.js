@@ -5,22 +5,24 @@ const logger = require('../module/Logger')
 const FomrattedDate = require('../module/FormattedDate')
 class AccountController {
     async getAccounts(req, res) {
-        console.log(logger.regexSymbol('-',50),"info")
-        console.log(`start getaccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`,"info")
+        console.log(logger.regexSymbol('-', 50), "info")
+        console.log(`start getaccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
         await Account.findAll()
             .then((result) => {
-                console.log(`send info at ${FomrattedDate.toDateTimeSeconds(new Date())}`,"info")
+                console.log(`send info at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
                 return res.status(200).send(result)
             })
             .catch((err) => {
-                console.log(`Error at ${FomrattedDate.toDateTimeSeconds(new Date())}\nmessage: ${err.message}`,"error")
+                console.log(`Error at ${FomrattedDate.toDateTimeSeconds(new Date())} message: ${err.message}`, "error")
                 return res.status(400).send(err.message)
             })
-            
-            console.log(`end getAccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`,"info")
-            console.log(logger.regexSymbol('-',50),"info")
+
+        console.log(`end getAccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
+        console.log(logger.regexSymbol('-', 50), "info")
     }
     async getAccountByID(req, res) {
+        console.log(logger.regexSymbol('-', 50), "info")
+        console.log(`start getAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
         await Account.findOne({
             where: {
                 id: req.params.account_id,
@@ -28,18 +30,25 @@ class AccountController {
         })
             .then((result) => {
                 if (result) {
+                    console.log(`send info at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
                     return res.status(200).send(result)
                 } else {
+                    console.log(`send info at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
                     return res
                         .status(400)
                         .send("Account with id: " + req.params.account_id + " not found")
                 }
             })
             .catch((err) => {
+                console.log(`send error message: ${err.message} at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "error")
                 return res.status(400).send(err.message)
             })
+        console.log(`end getAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
+
     }
     async getAccountsByUserID(req, res) {
+        console.log(`start getAccountsByUserID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
+
         await Account.findAll({
             where: {
                 user_id: req.params.user_id,
@@ -47,33 +56,42 @@ class AccountController {
         })
             .then((result) => {
                 if (result) {
+                    console.log(`send info at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
                     return res.status(200).send(result)
                 } else {
+                    console.log(`send info at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
                     return res
                         .status(400)
                         .send("User with id:" + req.params.account_id + " hasn't no one Account")
                 }
             })
             .catch((err) => {
+                console.log(`send error message: ${err.message} at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "error")
                 return res.status(400).send(err.message)
             })
+        console.log(`end getAccountsByUserID at ${FomrattedDate.toDateTimeSeconds(new Date())} `, "info")
     }
     async addAccounts(req, res) {
-
+        console.log(`start addAccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
         const { user_id, name, cash } = req.body
-        try {
-            const result = await Account.create({
-                user_id: user_id,
-                name: name,
-                cash: cash,
-            })
-            return res.status(200).send(result)
-        } catch (err) {
-            return res.status(400).send(err.message)
-        }
-    }
+        console.log(`take info from body at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
+        await Account.create({
+            user_id: user_id,
+            name: name,
+            cash: cash,
+        }).then((result) => {
+            console.log(`send info at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
 
+            return res.status(200).send(result)
+        }).catch((err) => {
+            console.log(`send error message: ${err.message} at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "error")
+            return res.status(400).send(err.message)
+        })
+        console.log(`end addAccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
+
+    }
     async deleteAccountByID(req, res) {
+        console.log(`start deleteAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
         await Account.destroy({
             where: {
                 id: req.params.account_id,
@@ -84,10 +102,12 @@ class AccountController {
         })
             .then((result) => {
                 if (result === 0) {
+                    console.log(`send info at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
                     return res
                         .status(400)
                         .send("Account with id " + req.params.account_id + " not found. Or it has name 'Total'")
                 }
+                console.log(`send info at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
                 return res
                     .status(200)
                     .send(
@@ -97,30 +117,35 @@ class AccountController {
                     )
             })
             .catch((err) => {
+                console.log(`send error message: ${err.message} at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "error")
                 return res.status(400).send(err.message)
             })
+        console.log(`end deleteAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
+
     }
     async patchAccountByID(req, res) {
-        const { user_id, name, cash } =
-            req.body
-        try {
-            await Account.update(
-                {
-                    user_id: user_id ?? db.sequelize.literal("user_id"),
-                    name: name ?? db.sequelize.literal("name"),
-                    cash: cash ?? db.sequelize.literal("cash"),
+        console.log(`start patchAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
+        const { user_id, name, cash } = req.body
+
+        await Account.update(
+            {
+                user_id: user_id ?? db.sequelize.literal("user_id"),
+                name: name ?? db.sequelize.literal("name"),
+                cash: cash ?? db.sequelize.literal("cash"),
+            },
+            {
+                where: {
+                    id: req.params.account_id,
                 },
-                {
-                    where: {
-                        id: req.params.account_id,
-                    },
-                }
-            ).then(()=>{
-                return res.status(200).send("Account with ID: " + req.params.account_id + " was changed successful")
-            })
-        } catch (err) {
+            }
+        ).then(() => {
+            console.log(`send info at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
+            return res.status(200).send("Account with ID: " + req.params.account_id + " was changed successful")
+        }).catch((err) => {
+            console.log(`send error message: ${err.message} at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
             return res.status(400).send(err.message)
-        }
+        })
+        console.log(`end patchAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
     }
 }
 

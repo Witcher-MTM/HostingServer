@@ -13,7 +13,7 @@ class FormattedDate {
     toDateTimeSeconds(dateString) {
         const date = new Date(dateString);
         if (date.toString() !== "Invalid Date") {
-          return date.toISOString().replace(/[T:]/g, " ");
+          return date.toISOString().replace(/[T:]/g, ":").replace(/[Z:]/g,"");
         }
         return dateString;
       }
