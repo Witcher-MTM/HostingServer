@@ -14,14 +14,15 @@ class UserController {
     async addUser(req, res,isLocal) {
         var { email, password, isConfirmed } = req.body
         try {
-            const candidate = await User.findOne({
+            await User.findOne({
                 where:{
                     email:email
                 }
+            }).then((candidate)=>{
+                if(candidate){
+                    return res.status(403).send("That email is taken")
+                }
             })
-            if(candidate){
-                return res.status(403).send("That email is taken")
-            }
             const Hashpassword = await bcrypt.hashSync(password,8)
             const result = await User.create({
                 email: email,
