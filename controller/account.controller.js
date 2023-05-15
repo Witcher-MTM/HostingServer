@@ -5,20 +5,20 @@ const logger = require('../module/Logger')
 const FomrattedDate = require('../module/FormattedDate')
 class AccountController {
     async getAccounts(req, res) {
-        logger.writeLog(logger.regexSymbol('-',50),"info")
-        logger.writeLog(`start getaccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`,"info")
+        console.log(logger.regexSymbol('-',50),"info")
+        console.log(`start getaccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`,"info")
         await Account.findAll()
             .then((result) => {
-                logger.writeLog(`send info at ${FomrattedDate.toDateTimeSeconds(new Date())}`,"info")
+                console.log(`send info at ${FomrattedDate.toDateTimeSeconds(new Date())}`,"info")
                 return res.status(200).send(result)
             })
             .catch((err) => {
-                logger.writeLog(`Error at ${FomrattedDate.toDateTimeSeconds(new Date())}\nmessage: ${err.message}`,"error")
+                console.log(`Error at ${FomrattedDate.toDateTimeSeconds(new Date())}\nmessage: ${err.message}`,"error")
                 return res.status(400).send(err.message)
             })
             
-        logger.writeLog(`end getAccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`,"info")
-        logger.writeLog(logger.regexSymbol('-',50),"info")
+            console.log(`end getAccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`,"info")
+            console.log(logger.regexSymbol('-',50),"info")
     }
     async getAccountByID(req, res) {
         await Account.findOne({
