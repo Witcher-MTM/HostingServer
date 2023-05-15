@@ -1,6 +1,8 @@
 const UserController = require('./user.controller')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
+const logger = require('../module/Logger')
+const FomrattedDate = require('../module/FormattedDate')
 class AuthController {
   async register(req, res) {
     console.log(logger.regexSymbol('-', 50), "info")
