@@ -15,6 +15,10 @@ module.exports = function(sequelize){
             type: Sequelize.STRING, 
             allowNull: false 
         },
+        total_cash: { 
+            type: Sequelize.INTEGER, 
+            allowNull: false 
+        },
         cash: { 
             type: Sequelize.INTEGER, 
             allowNull: false 
@@ -25,6 +29,10 @@ module.exports = function(sequelize){
         },
         color: { 
             type: Sequelize.STRING(20) 
+        },
+        category_id: {
+            type: Sequelize.INTEGER,
+            allowNull: false
         }
       },{
         timestamps:false,

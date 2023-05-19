@@ -1,4 +1,4 @@
-const {Goal} = require('../db/index')
+const { Goal } = require('../db/index')
 const db = require('../db')
 
 class GoalController {
@@ -12,14 +12,16 @@ class GoalController {
             })
     }
     async addGoal(req, res) {
-        const { user_id, name, cash, deadline, color } = req.body
+        const { user_id, name, total_cash, cash, deadline, color, category_id } = req.body
         try {
             const result = await Goal.create({
                 user_id: user_id,
                 name: name,
-                cash:cash,
-                deadline:deadline,
-                color:color,
+                total_cash: total_cash,
+                cash: cash,
+                deadline: deadline,
+                color: color,
+                category_id: category_id
             })
             return res.status(200).send(result)
         } catch (err) {
@@ -51,38 +53,38 @@ class GoalController {
             })
     }
     async patchGoalByID(req, res) {
-        await Goal.findOne({
-            where: {
-                id: req.params.goal_id,
-            },
-        })
-            .then((result) => {
-                if (result === 0) {
-                    return res
-                        .status(400)
-                        .send("Goal with id " + req.params.goal_id + " not found.")
-                } else {
-                    const { user_id, name, cash, deadline, color } = req.body
-                    Goal.update(
-                        {
-                            user_id: user_id ?? db.sequelize.literal("user_id"),
-                            name: name ?? db.sequelize.literal("name"),
-                            cash:cash ?? db.sequelize.literal("cash"),
-                            deadline:deadline ?? db.sequelize.literal("deadline"),
-                            color:color ?? db.sequelize.literal("color"),
+        try {
+            const result = await Goal.findOne({
+                where: {
+                    id: req.params.goal_id,
+                },
+            })
+            if (!result) {
+                return res.status(400).send("Goal with id " + req.params.goal_id + " not found.")
+            } else {
+                const { user_id, name, total_cash, cash, deadline, color, category_id } = req.body
+                Goal.update(
+                    {
+                        user_id: user_id ?? db.sequelize.literal("user_id"),
+                        name: name ?? db.sequelize.literal("name"),
+                        total_cash: total_cash ?? db.sequelize.literal("total_cash"),
+                        cash: cash ?? db.sequelize.literal("cash"),
+                        deadline: deadline ?? db.sequelize.literal("deadline"),
+                        color: color ?? db.sequelize.literal("color"),
+                        category_id: category_id ?? db.sequelize.literal("category_id")
+                    },
+                    {
+                        where: {
+                            id: req.params.goal_id,
                         },
-                        {
-                            where: {
-                                id: req.params.goal_id,
-                            },
-                        }
-                    )
-                    return res.status(200).send("Goal with ID: " + req.params.goal_id + " was changed successful")
-                }
-            })
-            .catch((err) => {
-                return res.status(400).send(err.message)
-            })
+                    }
+                )
+                return res.status(200).send("Goal with ID: " + req.params.goal_id + " was changed successful")
+            }
+        } catch (error) {
+            return res.status(500).send(error.message)
+        }
+        
     }
     async getGoalByUserID(req, res) {
         await Goal.findAll({
