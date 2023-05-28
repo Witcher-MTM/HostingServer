@@ -14,7 +14,9 @@ class UserController {
     }
     async addUser(req, res, isLocal) {
         var { email, isConfirmed, apikey } = req.body
-        var { accessToken, refreshToken } = req.headers
+        var { accesstoken, refreshtoken } = req.headers
+        console.log("Token",accesstoken,"\nrefreshtoken",refreshtoken,"\nemail",email,"\nisConfirmed",isConfirmed,"\napikey",apikey)
+        console.log("add user start")
         try {
             await User.findOne({
                 where: {
@@ -27,9 +29,9 @@ class UserController {
             })
             const result = await User.create({
                 email: email,
-                isConfirmed: isConfirmed ?? false,
-                accessToken: accessToken,
-                refreshToken: refreshToken,
+                isConfirmed: false,
+                accessToken: accesstoken,
+                refreshToken: refreshtoken,
                 apikey:apikey
             })
             const default_categories = await DefaultCategory.findAll()
@@ -54,7 +56,9 @@ class UserController {
             }
             return res.status(200).send(result)
         } catch (err) {
+            console.log(err.message)
             return res.send(err.message)
+
         }
     }
     async deleteUserByID(req, res) {

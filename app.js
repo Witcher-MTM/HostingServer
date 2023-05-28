@@ -5,7 +5,6 @@ const app = express()
 const cors = require('cors')
 const db = require('./db')
 const helmet = require("helmet")
-const session = require('express-session')
 const PORT = process.env.PORT || 5000
 const TransactionRoute = require('./routes/transaction.route')
 const CategoryRoute = require('./routes/category.route')
