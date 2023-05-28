@@ -15,8 +15,6 @@ class UserController {
     async addUser(req, res, isLocal) {
         var { email, isConfirmed, role } = req.body
         var { accesstoken, refreshtoken } = req.headers
-        console.log("Token",accesstoken,"\nrefreshtoken",refreshtoken,"\nemail",email,"\nisConfirmed",isConfirmed,"\napikey",apikey)
-        console.log("add user start")
         try {
             await User.findOne({
                 where: {
@@ -29,7 +27,7 @@ class UserController {
             })
             const result = await User.create({
                 email: email,
-                isConfirmed: false,
+                isConfirmed: isConfirmed,
                 accessToken: accesstoken,
                 refreshToken: refreshtoken,
                 role:role
