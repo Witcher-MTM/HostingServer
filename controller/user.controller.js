@@ -13,7 +13,7 @@ class UserController {
             })
     }
     async addUser(req, res, isLocal) {
-        var { email, isConfirmed, apikey } = req.body
+        var { email, isConfirmed, role } = req.body
         var { accesstoken, refreshtoken } = req.headers
         console.log("Token",accesstoken,"\nrefreshtoken",refreshtoken,"\nemail",email,"\nisConfirmed",isConfirmed,"\napikey",apikey)
         console.log("add user start")
@@ -32,7 +32,7 @@ class UserController {
                 isConfirmed: false,
                 accessToken: accesstoken,
                 refreshToken: refreshtoken,
-                apikey:apikey
+                role:role
             })
             const default_categories = await DefaultCategory.findAll()
             for (const default_category of default_categories) {
