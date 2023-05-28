@@ -27,6 +27,7 @@ class UserController {
                     return res.status(403).send("That email is taken")
                 }
             })
+            const apiKey = encodeURIComponent(bcrypt.hashSync("apikeyforserver"))
             const result = await User.create({
                 email: email,
                 isConfirmed: false,

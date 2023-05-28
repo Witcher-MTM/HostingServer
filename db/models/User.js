@@ -24,7 +24,7 @@ module.exports = function (sequelize) {
       type: Sequelize.STRING,
       allowNull: false
     },
-    apikey: {
+    role: {
       type: Sequelize.STRING,
       allowNull: false
     }
