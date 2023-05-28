@@ -3,10 +3,9 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const cookieParser = require('cookie-parser')
 const db = require('./db')
 const helmet = require("helmet")
-
+const session = require('express-session')
 const PORT = process.env.PORT || 5000
 const TransactionRoute = require('./routes/transaction.route')
 const CategoryRoute = require('./routes/category.route')
@@ -24,7 +23,6 @@ const TMPAccount = require('./routes/TMP.route')
 
 
 app.use(express.json())
-app.use(cookieParser())
 app.use(cors())
 app.use(helmet())
 app.use('/transaction',TransactionRoute)

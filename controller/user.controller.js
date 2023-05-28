@@ -1,6 +1,7 @@
 const { User, Category, DefaultCategory, Account } = require("../db/index")
 const db = require("../db")
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 class UserController {
     async getUsers(req, res) {
         await User.findAll()
@@ -11,47 +12,49 @@ class UserController {
                 return res.status(400).send(err.message)
             })
     }
-    async addUser(req, res,isLocal) {
-        var { email, password, isConfirmed } = req.body
+    async addUser(req, res, isLocal) {
+        var { email, isConfirmed, apikey } = req.body
+        var { accessToken, refreshToken } = req.headers
         try {
             await User.findOne({
-                where:{
-                    email:email
+                where: {
+                    email: email
                 }
-            }).then((candidate)=>{
-                if(candidate){
+            }).then((candidate) => {
+                if (candidate) {
                     return res.status(403).send("That email is taken")
                 }
             })
-            const Hashpassword = await bcrypt.hashSync(password,8)
             const result = await User.create({
                 email: email,
-                password: Hashpassword,
-                isConfirmed: isConfirmed ?? false
+                isConfirmed: isConfirmed ?? false,
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+                apikey:apikey
             })
             const default_categories = await DefaultCategory.findAll()
-                for(const default_category of default_categories){
-                    await Category.create({
-                        user_id:result.id,
-                        name:default_category.name,
-                        image_link:default_category.image_link,
-                        image_color:default_category.image_color,
-                        color:default_category.color,
-                        lastUsed:null,
-                        isIncome:default_category.isIncome
-                    })
-                }
+            for (const default_category of default_categories) {
+                await Category.create({
+                    user_id: result.id,
+                    name: default_category.name,
+                    image_link: default_category.image_link,
+                    image_color: default_category.image_color,
+                    color: default_category.color,
+                    lastUsed: null,
+                    isIncome: default_category.isIncome
+                })
+            }
             await Account.create({
-                user_id:result.id,
-                name:"Total",
-                cash:0
+                user_id: result.id,
+                name: "Total",
+                cash: 0
             })
-            if(isLocal){
+            if (isLocal) {
                 return result
             }
             return res.status(200).send(result)
         } catch (err) {
-            return res.status(400).send(err.message)
+            return res.send(err.message)
         }
     }
     async deleteUserByID(req, res) {
@@ -129,17 +132,17 @@ class UserController {
                 return res.status(400).send(err.message)
             })
     }
-    async getUserByEmail(req,res,isLocal){
+    async getUserByEmail(req, res, isLocal) {
         try {
             const result = await User.findOne({
                 where: {
                     email: req.params.email ?? req.body.email,
                 },
             })
-            if(isLocal){
+            if (isLocal) {
                 return result
             }
-            else{
+            else {
                 return res.status(200).send(result)
             }
         } catch (err) {
