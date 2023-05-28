@@ -146,12 +146,18 @@ class TransactionController {
     if (result.length > 0) {
       if (isLocal) {
         return result
+      } else {
+        return res.status(200).send(result)
       }
-      return res.status(200).send(result)
     } else {
-      return res
-        .status(400)
-        .send("User with id: " + req.params.user_id + " haven't any transaction")
+      if (isLocal) {
+        return
+      }
+      else {
+        return res
+          .status(400)
+          .send("User with id: " + req.params.user_id + " haven't any transaction")
+      }
     }
   }
   async getTransactionByID(req, res) {

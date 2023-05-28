@@ -13,10 +13,8 @@ class CategoryController {
             return res.status(400).send(err.message);
         })
         if (local) {
-
             return result;
         } else {
-
             return res.status(200).send(result);
         }
     }
