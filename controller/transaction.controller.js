@@ -7,30 +7,30 @@ class TransactionController {
     const combinedTransactions = []
     try {
       const result = await Transaction.findAll()
-        const categories = await CategoryController.getCategories(req, res, true)
-          if (!categories) {
-            throw new Error('Categories not found')
+      const categories = await CategoryController.getCategories(req, res, true)
+      if (!categories) {
+        throw new Error('Categories not found')
+      }
+      for (const transaction of result) {
+        for (const category of categories) {
+          if (transaction.category_id === category.id) {
+            const formattedDate = FormattedDate.toDate(transaction.date)
+            combinedTransactions.push({
+              'x': category.name,
+              'y': transaction.cash,
+              'fill': category.color,
+              'id': transaction.id,
+              'comment': transaction.comment,
+              'image_link': category.image_link,
+              'image_color': category.image_color,
+              'isIncome': transaction.isIncome,
+              'date': formattedDate,
+              'category_id': category.id
+            })
           }
-          for (const transaction of result) {
-            for (const category of categories) {
-              if (transaction.category_id === category.id) {
-                const formattedDate = FormattedDate.toDate(transaction.date)
-                combinedTransactions.push({
-                  'x': category.name,
-                  'y': transaction.cash,
-                  'fill': category.color,
-                  'id': transaction.id,
-                  'comment': transaction.comment,
-                  'image_link': category.image_link,
-                  'image_color': category.image_color,
-                  'isIncome': transaction.isIncome,
-                  'date': formattedDate,
-                  'category_id': category.id
-                })
-              }
-            }
-          }
-        return res.status(200).send(combinedTransactions)
+        }
+      }
+      return res.status(200).send(combinedTransactions)
     } catch (err) {
       return res.status(400).send(err.message)
     }
@@ -47,7 +47,7 @@ class TransactionController {
         comment: comment,
         cash: cash,
         isIncome: isIncome,
-      }).then(async(result)=>{
+      }).then(async (result) => {
         const categories = await CategoryController.getCategories(req, res, true)
         if (!categories) {
           throw new Error('Categories not found')
@@ -127,7 +127,7 @@ class TransactionController {
                 id: req.params.transaction_id,
               },
             }
-          ).then(()=>{
+          ).then(() => {
             return res.status(200).send("Transaction with ID: " + req.params.transaction_id + " was changed successful")
           })
         }
@@ -140,7 +140,7 @@ class TransactionController {
 
     const result = await Transaction.findAll({
       where: {
-        user_id: req.body == null ? req.body.user_id : req.params.user_id,
+        user_id: req.body.user_id == null ? req.params.user_id : req.body.user_id,
       },
     })
     if (result.length > 0) {
