@@ -1,7 +1,5 @@
 const { User, Category, DefaultCategory, Account } = require("../db/index")
 const db = require("../db")
-const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken');
 const { generateTokens } = require("../module/Token");
 class UserController {
     async getUsers(req, res) {
@@ -15,7 +13,7 @@ class UserController {
     }
     async addUser(req, res, isLocal) {
         const {uid,email,emailVerified,createdAt,lastLoginAt,apiKey} = req.body
-        const { accessToken, refreshToken } = await generateTokens(uid,email,apiKey)
+        const { accessToken, refreshToken } = await generateTokens(uid,email,createdAt)
         try {
             await User.findOne({
                 where: {
@@ -36,10 +34,9 @@ class UserController {
                 accesstoken:accessToken,
                 refreshtoken:refreshToken
             })
-            return;
             const default_categories = await DefaultCategory.findAll()
             for (const default_category of default_categories) {
-                await Category.create({
+                Category.create({
                     uid: result.uid,
                     name: default_category.name,
                     image_link: default_category.image_link,
@@ -49,7 +46,7 @@ class UserController {
                     isIncome: default_category.isIncome
                 })
             }
-            await Account.create({
+            Account.create({
                 uid: result.uid,
                 name: "Total",
                 cash: 0
@@ -59,9 +56,7 @@ class UserController {
             }
             return res.status(200).send(result)
         } catch (err) {
-            console.log(err.message)
             return res.send(err.message)
-
         }
     }
     async deleteUserByID(req, res) {

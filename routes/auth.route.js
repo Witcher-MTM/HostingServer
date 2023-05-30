@@ -6,7 +6,7 @@ route.post('/register',async(req,res)=>{
     await AuthController.register(req,res)
 })
 route.post('/login',async(req,res)=>{
-    await AuthController.authenticateUser(req,res)
+    await AuthController.login(req,res)
 })
 
 module.exports = route;

@@ -6,26 +6,9 @@ class LoadController {
 
     async combineTransactions(req, res) {
         try {
-            const { uid } = req.params
-
-            if (!uid) {
-                throw new Error('User ID is missing')
-            }
-
             const transactions = await TransactionController.getTransactionsByUserID(req, res, true)
-
-            if (!transactions) {
-                throw new Error('Transactions not found')
-            }
-
             const categories = await CategoryController.getCategories(req, res, true)
-
-            if (!categories) {
-                throw new Error('Categories not found')
-            }
-
             const combinedTransactions = []
-
             for (const transaction of transactions) {
                 for (const category of categories) {
                     if (transaction.category_id === category.id) {
@@ -45,15 +28,11 @@ class LoadController {
                     }
                 }
             }
-            
             res.status(200).send(combinedTransactions)
         } catch (err) {
             res.status(400).send(err.message)
         }
     }
-
-
-
 }
 
 module.exports = new LoadController()
