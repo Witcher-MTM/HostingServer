@@ -36,7 +36,7 @@ class UserController {
             })
             const default_categories = await DefaultCategory.findAll()
             for (const default_category of default_categories) {
-                Category.create({
+                await Category.create({
                     uid: result.uid,
                     name: default_category.name,
                     image_link: default_category.image_link,
@@ -46,7 +46,7 @@ class UserController {
                     isIncome: default_category.isIncome
                 })
             }
-            Account.create({
+            await Account.create({
                 uid: result.uid,
                 name: "Total",
                 cash: 0
