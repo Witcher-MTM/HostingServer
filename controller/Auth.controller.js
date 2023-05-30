@@ -7,16 +7,20 @@ class AuthController {
   }
   async login(req, res) {
     const {accessToken} = req.body
-    console.log("token", accessToken)
-    if(jwt.verify(accessToken,process.env.SECRET_KEY)){
-      console.log("jwt verified")
+    if(await jwt.verify(accessToken,process.env.SECRET_KEY)){
       try {
         const result = await User.findOne({
           where:{
             accesstoken : accessToken
           }
         })
-        console.log("result:", result)
+        if(!result){
+          result = await User.findOne({
+            where:{
+              accesstoken : accessToken
+            }
+          })
+        }
         res.status(200).send(result)
       } catch (error) {
         res.status(400).send(error.message)
