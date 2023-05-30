@@ -16,6 +16,7 @@ class AuthController {
             accesstoken : accessToken
           }
         })
+        console.log("result:", result)
         res.status(200).send(result)
       } catch (error) {
         res.status(400).send(error.message)
