@@ -10,15 +10,17 @@ class AuthController {
     console.log("token", accessToken)
     if(jwt.verify(accessToken,process.env.SECRET_KEY)){
       console.log("jwt verified")
-      await User.findOne({
-        where:{
-          accesstoken : accessToken
-        }
-      }).then((result)=>{
+      try {
+        const result = await User.findOne({
+          where:{
+            accesstoken : accessToken
+          }
+        })
         res.status(200).send(result)
-      }).catch((e)=>{
-        res.status(400).send(e.message)
-      })
+      } catch (error) {
+        res.status(400).send(error.message)
+      }
+        
     }else{
       console.log("jwt not verified")
       res.status(403).send("jwt not verified")
