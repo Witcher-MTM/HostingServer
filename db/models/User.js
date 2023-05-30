@@ -2,31 +2,40 @@ const Sequelize = require('sequelize')
 
 module.exports = function (sequelize) {
   return sequelize.define('User', {
-    id: {
+    uid: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true
     },
     email: {
       type: Sequelize.STRING,
       allowNull: false,
       unique: true
     },
-    isConfirmed: {
+    emailVerified: {
       type: Sequelize.BOOLEAN,
       allowNull: false
     },
-    accessToken: {
+    createdAt: {
       type: Sequelize.STRING,
       allowNull: false
     },
-    refreshToken: {
+    lastLoginAt: {
       type: Sequelize.STRING,
       allowNull: false
     },
-    role: {
+    apiKey: {
       type: Sequelize.STRING,
       allowNull: false
+    },
+    accesstoken: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true
+    },
+    refreshtoken: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true
     }
   }, {
     timestamps: false,

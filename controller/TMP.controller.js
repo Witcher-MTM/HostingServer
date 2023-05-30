@@ -1,34 +1,59 @@
-const { Tmp } = require("../db/index")
+const { User ,DefaultCategory,Account,Category} = require("../db/index")
 const db = require("../db")
 
 class TMPController{
-    async GetTMPAccount(req,res){
-        await Tmp.findOne()
-            .then((result) => {
-                return res.status(200).send(result)
-            })
-            .catch((err) => {
-                return res.status(400).send(err.message)
-            })
-    }
-    async patchTMPAccountByID(req, res) {
-        const { user_id, cash } =
-            req.body
+    async Login(req,res,isLocal){
+        console.log("UID: ",req.body.uid)
+        console.log("Email: ",req.body.email)
+        console.log("emailVerified: ",req.body.emailVerified)
+        console.log("createdAt: ",req.body.createdAt)
+        console.log("lastLoginAt: ",req.body.lastLoginAt)
+        console.log("apiKey: ",req.body.apiKey)
+
+        const {uid,email,emailVerified,createdAt,lastLoginAt,apiKey} = req.body
         try {
-            Tmp.update(
-                {
-                    user_id: user_id ?? db.sequelize.literal("user_id"),
-                    cash: cash ?? db.sequelize.literal("cash"),
-                },
-                {
-                    where: {
-                        id: req.params.account_id,
-                    },
+            await User.findOne({
+                where: {
+                    email: email
                 }
-            )
-            return res.status(200).send("Account with ID: " + req.params.account_id + " was changed successful")
+            }).then((candidate) => {
+                if (candidate) {
+                    return res.status(403).send("That email is taken")
+                }
+            })
+            const result = await User.create({
+                uid:uid,
+                email: email,
+                emailVerified: emailVerified,
+                createdAt: createdAt,
+                lastLoginAt: lastLoginAt,
+                apiKey:apiKey
+            })
+            const default_categories = await DefaultCategory.findAll()
+            for (const default_category of default_categories) {
+                await Category.create({
+                    uid: result.uid,
+                    name: default_category.name,
+                    image_link: default_category.image_link,
+                    image_color: default_category.image_color,
+                    color: default_category.color,
+                    lastUsed: null,
+                    isIncome: default_category.isIncome
+                })
+            }
+            await Account.create({
+                uid: result.uid,
+                name: "Total",
+                cash: 0
+            })
+            if (isLocal) {
+                return result
+            }
+            return res.status(200).send(result)
         } catch (err) {
-            return res.status(400).send(err.message)
+            console.log(err.message)
+            return res.send(err.message)
+
         }
     }
 }

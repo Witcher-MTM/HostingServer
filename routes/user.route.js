@@ -5,7 +5,7 @@ const userController = require('../controller/user.controller')
 router.get("/",async(req,res)=>{
     await userController.getUsers(req,res)
 })
-router.get("/:user_id",async(req,res)=>{
+router.get("/:uid",async(req,res)=>{
     await userController.getUserByID(req,res)
 })
 router.get("/email/:email",async(req,res)=>{
@@ -14,10 +14,10 @@ router.get("/email/:email",async(req,res)=>{
 router.post("/",async(req,res)=>{
     await userController.addUser(req,res)
 })
-router.delete("/:user_id",async(req,res)=>{
+router.delete("/:uid",async(req,res)=>{
     await userController.deleteUserByID(req,res)
 })
-router.patch("/:user_id",async(req,res)=>{
+router.patch("/:uid",async(req,res)=>{
     await userController.patchUserByID(req,res)
 })
 

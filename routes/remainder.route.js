@@ -5,7 +5,7 @@ const RemainderController = require('../controller/remainder.controller')
 router.get("/",async(req,res)=>{
     await RemainderController.getRemainders(req,res)
 })
-router.get("/user/:user_id",async(req,res)=>{
+router.get("/user/:uid",async(req,res)=>{
     await RemainderController.getRemainderByUserID(req,res)
 })
 router.get("/:remainder_id",async(req,res)=>{

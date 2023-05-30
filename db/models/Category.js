@@ -8,8 +8,8 @@ module.exports = function(sequelize){
           autoIncrement: true,
           allowNull: false
         },
-        user_id: {
-          type: Sequelize.INTEGER,
+        uid: {
+          type: Sequelize.STRING,
           allowNull: false
         },
         name: {

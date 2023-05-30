@@ -12,10 +12,10 @@ class GoalController {
             })
     }
     async addGoal(req, res) {
-        const { user_id, name, total_cash, cash, deadline, color, category_id } = req.body
+        const { uid, name, total_cash, cash, deadline, color, category_id } = req.body
         try {
             const result = await Goal.create({
-                user_id: user_id,
+                uid: uid,
                 name: name,
                 total_cash: total_cash,
                 cash: cash,
@@ -62,10 +62,10 @@ class GoalController {
             if (!result) {
                 return res.status(400).send("Goal with id " + req.params.goal_id + " not found.")
             } else {
-                const { user_id, name, total_cash, cash, deadline, color, category_id } = req.body
+                const { uid, name, total_cash, cash, deadline, color, category_id } = req.body
                 Goal.update(
                     {
-                        user_id: user_id ?? db.sequelize.literal("user_id"),
+                        uid: uid ?? db.sequelize.literal("uid"),
                         name: name ?? db.sequelize.literal("name"),
                         total_cash: total_cash ?? db.sequelize.literal("total_cash"),
                         cash: cash ?? db.sequelize.literal("cash"),
@@ -89,7 +89,7 @@ class GoalController {
     async getGoalByUserID(req, res) {
         await Goal.findAll({
             where: {
-                user_id: req.params.user_id,
+                uid: req.params.uid,
             },
         })
             .then((result) => {
@@ -98,7 +98,7 @@ class GoalController {
                 } else {
                     return res
                         .status(400)
-                        .send("User with " + req.params.user_id + " haven't Goals")
+                        .send("User with " + req.params.uid + " haven't Goals")
                 }
             })
             .catch((err) => {

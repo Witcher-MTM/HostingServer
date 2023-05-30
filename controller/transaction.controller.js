@@ -38,11 +38,11 @@ class TransactionController {
   }
   async addTransaction(req, res) {
     var combinedTransaction = {};
-    const { category_id, user_id, date, comment, cash, isIncome } = req.body
+    const { category_id, uid, date, comment, cash, isIncome } = req.body
     try {
       await Transaction.create({
         category_id: category_id,
-        user_id: user_id,
+        uid: uid,
         date: date,
         comment: comment,
         cash: cash,
@@ -111,12 +111,12 @@ class TransactionController {
             .status(400)
             .send("Transaction with id " + req.params.transaction_id + " not found.")
         } else {
-          const { category_id, user_id, date, comment, cash, isIncome } =
+          const { category_id, uid, date, comment, cash, isIncome } =
             req.body
           Transaction.update(
             {
               category_id: category_id ?? db.sequelize.literal("category_id"),
-              user_id: user_id ?? db.sequelize.literal("user_id"),
+              uid: uid ?? db.sequelize.literal("uid"),
               date: date ?? db.sequelize.literal("date"),
               comment: comment ?? db.sequelize.literal("comment"),
               cash: cash ?? db.sequelize.literal("cash"),
@@ -140,7 +140,7 @@ class TransactionController {
 
     const result = await Transaction.findAll({
       where: {
-        user_id: req.body.user_id == null ? req.params.user_id : req.body.user_id,
+        uid: req.body.uid == null ? req.params.uid : req.body.uid,
       },
     })
     if (result.length > 0) {
@@ -156,7 +156,7 @@ class TransactionController {
       else {
         return res
           .status(400)
-          .send("User with id: " + req.params.user_id + " haven't any transaction")
+          .send("User with id: " + req.params.uid + " haven't any transaction")
       }
     }
   }

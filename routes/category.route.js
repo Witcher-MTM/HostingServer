@@ -6,7 +6,7 @@ const categoryController = require('../controller/category.controller')
 router.get('/', async(req,res)=>{
     await categoryController.getCategories(req,res)
 })
-router.get('/user/:user_id', async(req,res)=>{
+router.get('/user/:uid', async(req,res)=>{
     await categoryController.getCategoryByUserID(req,res)
 })
 router.get('/:category_id',async(req,res)=>{

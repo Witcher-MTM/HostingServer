@@ -6,9 +6,9 @@ class LoadController {
 
     async combineTransactions(req, res) {
         try {
-            const { user_id } = req.params
+            const { uid } = req.params
 
-            if (!user_id) {
+            if (!uid) {
                 throw new Error('User ID is missing')
             }
 

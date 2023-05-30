@@ -5,7 +5,7 @@ const accountController = require('../controller/account.controller')
 router.get('/',async(req,res)=>{
     await accountController.getAccounts(req,res)
 })
-router.get('/user/:user_id',async(req,res)=>{
+router.get('/user/:uid',async(req,res)=>{
     await accountController.getAccountsByUserID(req,res)
 })
 router.get('/:account_id', async(req,res)=>{

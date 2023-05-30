@@ -6,7 +6,7 @@ const transactionController = require('../controller/transaction.controller')
 router.get('/',async(req,res)=>{
     await transactionController.getTransactions(req,res)
 })
-router.get('/user/:user_id', async(req,res)=>{
+router.get('/user/:uid', async(req,res)=>{
     await transactionController.getTransactionsByUserID(req,res);
 })
 router.get("/:transaction_id",async(req,res)=>{

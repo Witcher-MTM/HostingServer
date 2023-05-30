@@ -1,12 +1,9 @@
 const { Account } = require("../db/index")
 const db = require("../db")
 const { Op } = require('sequelize');
-const logger = require('../module/Logger')
 const FomrattedDate = require('../module/FormattedDate')
 class AccountController {
     async getAccounts(req, res) {
-        console.log(logger.regexSymbol('-', 50), "info")
-        console.log(`start getaccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
         await Account.findAll()
             .then((result) => {
                 console.log(`send info at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
@@ -17,12 +14,8 @@ class AccountController {
                 return res.status(400).send(err.message)
             })
 
-        console.log(`end getAccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
-        console.log(logger.regexSymbol('-', 50), "info")
     }
     async getAccountByID(req, res) {
-        console.log(logger.regexSymbol('-', 50), "info")
-        console.log(`start getAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
         await Account.findOne({
             where: {
                 id: req.params.account_id,
@@ -43,16 +36,12 @@ class AccountController {
                 console.log(`send error message: ${err.message} at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "error")
                 return res.status(400).send(err.message)
             })
-        console.log(`end getAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
-        console.log(logger.regexSymbol('-', 50), "info")
     }
     async getAccountsByUserID(req, res) {
-        console.log(logger.regexSymbol('-', 50), "info")
-        console.log(`start getAccountsByUserID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
 
         await Account.findAll({
             where: {
-                user_id: req.params.user_id,
+                uid: req.params.uid,
             },
         })
             .then((result) => {
@@ -70,16 +59,11 @@ class AccountController {
                 console.log(`send error message: ${err.message} at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "error")
                 return res.status(400).send(err.message)
             })
-        console.log(`end getAccountsByUserID at ${FomrattedDate.toDateTimeSeconds(new Date())} `, "info")
-        console.log(logger.regexSymbol('-', 50), "info")
     }
     async addAccounts(req, res) {
-        console.log(logger.regexSymbol('-', 50), "info")
-        console.log(`start addAccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
-        const { user_id, name, cash } = req.body
-        console.log(`take info from body at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
+        const { uid, name, cash } = req.body
         await Account.create({
-            user_id: user_id,
+            uid: uid,
             name: name,
             cash: cash,
         }).then((result) => {
@@ -90,12 +74,8 @@ class AccountController {
             console.log(`send error message: ${err.message} at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "error")
             return res.status(400).send(err.message)
         })
-        console.log(`end addAccounts at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
-        console.log(logger.regexSymbol('-', 50), "info")
     }
     async deleteAccountByID(req, res) {
-        console.log(logger.regexSymbol('-', 50), "info")
-        console.log(`start deleteAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
         await Account.destroy({
             where: {
                 id: req.params.account_id,
@@ -125,18 +105,14 @@ class AccountController {
                 return res.status(400).send(err.message)
             })
             
-        console.log(`end deleteAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
-        console.log(logger.regexSymbol('-', 50), "info")
 
     }
     async patchAccountByID(req, res) {
-        console.log(logger.regexSymbol('-', 50), "info")
-        console.log(`start patchAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
-        const { user_id, name, cash } = req.body
+        const { uid, name, cash } = req.body
 
         await Account.update(
             {
-                user_id: user_id ?? db.sequelize.literal("user_id"),
+                uid: uid ?? db.sequelize.literal("uid"),
                 name: name ?? db.sequelize.literal("name"),
                 cash: cash ?? db.sequelize.literal("cash"),
             },
@@ -152,8 +128,6 @@ class AccountController {
             console.log(`send error message: ${err.message} at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
             return res.status(400).send(err.message)
         })
-        console.log(`end patchAccountByID at ${FomrattedDate.toDateTimeSeconds(new Date())}`, "info")
-        console.log(logger.regexSymbol('-', 50), "info")
     }
 }
 

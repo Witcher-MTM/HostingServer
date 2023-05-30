@@ -5,7 +5,7 @@ const goalController = require('../controller/goal.controller')
 router.get("/",async(req,res)=>{
     await goalController.getGoal(req,res)
 })
-router.get("/user/:user_id",async(req,res)=>{
+router.get("/user/:uid",async(req,res)=>{
     await goalController.getGoalByUserID(req,res)
 })
 router.get("/:goal_id",async(req,res)=>{

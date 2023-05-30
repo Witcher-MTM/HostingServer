@@ -12,11 +12,11 @@ class RemainderController {
             })
     }
     async addRemainder(req, res) {
-        const { user_id, category_id, name, cash, dateRemainde } = req.body
+        const { uid, category_id, name, cash, dateRemainde } = req.body
         try {
 
             const result = await Remainder.create({
-                user_id: user_id,
+                uid: uid,
                 category_id: category_id,
                 name: name,
                 cash:cash,
@@ -63,10 +63,10 @@ class RemainderController {
                         .status(400)
                         .send("Remainder with id " + req.params.remainder_id + " not found.")
                 } else {
-                    const { user_id, category_id, name, cash, dateRemainde } = req.body
+                    const { uid, category_id, name, cash, dateRemainde } = req.body
                     Remainder.update(
                         {
-                            user_id: user_id ?? db.sequelize.literal("user_id"),
+                            uid: uid ?? db.sequelize.literal("uid"),
                             category_id: category_id ?? db.sequelize.literal("category_id"),
                             name: name ?? db.sequelize.literal("name"),
                             cash:cash ?? db.sequelize.literal("cash"),
@@ -88,7 +88,7 @@ class RemainderController {
     async getRemainderByUserID(req, res) {
         await Remainder.findAll({
             where: {
-                user_id: req.params.user_id,
+                uid: req.params.uid,
             },
         })
             .then((result) => {
@@ -97,7 +97,7 @@ class RemainderController {
                 } else {
                     return res
                         .status(400)
-                        .send("User with " + req.params.user_id + " haven't remainders")
+                        .send("User with " + req.params.uid + " haven't remainders")
                 }
             })
             .catch((err) => {

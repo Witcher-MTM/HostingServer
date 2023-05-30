@@ -8,11 +8,10 @@ module.exports = function (sequelize) {
             primaryKey: true, 
             autoIncrement: true 
         },
-        user_id: 
-        { 
-            type: Sequelize.INTEGER, 
-            allowNull: false 
-        },
+        uid: {
+            type: Sequelize.STRING,
+            allowNull: false
+          },
         category_id:{
             type: Sequelize.INTEGER, 
             allowNull: false 

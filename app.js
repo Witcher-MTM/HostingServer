@@ -16,7 +16,7 @@ const GoalRoute = require('./routes/goal.route')
 const DefaultCategoryRoute = require('./routes/defaultCategory.route')
 const IconRoute = require('./routes/icon.route')
 const AuthRoute = require('./routes/auth.route')
-const TMPAccount = require('./routes/TMP.route')
+
 
 
 
@@ -34,7 +34,7 @@ app.use('/goal',GoalRoute)
 app.use('/defaultcategory',DefaultCategoryRoute);
 app.use('/icon',IconRoute)
 app.use('/auth',AuthRoute)
-app.use('/tmp',TMPAccount)
+
 
 app.listen(PORT,()=>{
     db.sequelize

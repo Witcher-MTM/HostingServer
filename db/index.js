@@ -13,7 +13,6 @@ const Transaction = require('./models/Transaction')(sequelize)
 const User = require('./models/User')(sequelize)
 const DefaultCategory = require('./models/DefaultCategory')(sequelize)
 const Icon = require('./models/Icon')(sequelize)
-const Tmp = require('./models/tmp')(sequelize)
 Object.freeze(sequelize)
 module.exports = {
     sequelize: sequelize,
@@ -25,6 +24,4 @@ module.exports = {
     User : User,
     DefaultCategory:DefaultCategory,
     Icon:Icon,
-    Tmp:Tmp
-
 }
