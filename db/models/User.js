@@ -23,10 +23,6 @@ module.exports = function (sequelize) {
       type: Sequelize.STRING,
       allowNull: false
     },
-    apiKey: {
-      type: Sequelize.STRING,
-      allowNull: false
-    },
     accesstoken: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -36,6 +32,10 @@ module.exports = function (sequelize) {
       type: Sequelize.STRING,
       allowNull: false,
       unique: true
+    },
+    total_cash: {
+      type: Sequelize.FLOAT,
+      allowNull: false
     }
   }, {
     timestamps: false,

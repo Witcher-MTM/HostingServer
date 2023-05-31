@@ -28,7 +28,7 @@ class UserController {
         }
     }
     async addUser(req, res, isLocal) {
-        const { uid, email, emailVerified, createdAt, lastLoginAt, apiKey } = req.body
+        const { uid, email, emailVerified, createdAt, lastLoginAt } = req.body
         const { accessToken, refreshToken } = await generateTokens(uid, email, createdAt)
         try {
             await User.findOne({
@@ -46,9 +46,9 @@ class UserController {
                 emailVerified: emailVerified,
                 createdAt: createdAt,
                 lastLoginAt: lastLoginAt,
-                apiKey: apiKey,
                 accesstoken: accessToken,
-                refreshtoken: refreshToken
+                refreshtoken: refreshToken,
+                total_cash: 0
             })
             const default_categories = await DefaultCategory.findAll()
             for (const default_category of default_categories) {
@@ -104,47 +104,40 @@ class UserController {
                 return res.status(400).send(err.message)
             })
     }
-    async patchUserByID(arg1, arg2) {
-        if (typeof arg1 === 'object' && arg2 === undefined) {
-            // Функція була викликана з об'єктом параметрів
-            const req = arg1;
-            const res = arg2;
-            await User.findOne({
-                where: {
-                    id: req.params.uid,
-                },
-            })
-                .then((result) => {
-                    if (result === 0) {
-                        return res.status(400).send("User with id " + req.params.uid + " not found.");
-                    } else {
-                        const { uid, email, emailVerified, createdAt, lastLoginAt, apiKey } = req.body;
-                        User.update(
-                            {
-                                uid: uid ?? db.sequelize.literal("uid"),
-                                email: email ?? db.sequelize.literal("email"),
-                                emailVerified: emailVerified ?? db.sequelize.literal("emailVerified"),
-                                createdAt: createdAt ?? db.sequelize.literal("createdAt"),
-                                lastLoginAt: lastLoginAt ?? db.sequelize.literal("lastLoginAt"),
-                                apiKey: apiKey ?? db.sequelize.literal("apiKey"),
+    async patchUserByID(req, res) {
+        await User.findOne({
+            where: {
+                uid: req.params.uid,
+            },
+        })
+            .then((result) => {
+                if (result === 0) {
+                    return res.status(400).send("User with id " + req.params.uid + " not found.");
+                } else {
+                    const { uid, email, emailVerified, createdAt, lastLoginAt,accesstoken,refreshtoken,total_cash } = req.body;
+                    User.update(
+                        {
+                            uid: uid ?? db.sequelize.literal("uid"),
+                            email: email ?? db.sequelize.literal("email"),
+                            emailVerified: emailVerified ?? db.sequelize.literal("emailVerified"),
+                            createdAt: createdAt ?? db.sequelize.literal("createdAt"),
+                            lastLoginAt: lastLoginAt ?? db.sequelize.literal("lastLoginAt"),
+                            accesstoken: accesstoken ?? db.sequelize.literal("accesstoken"),
+                            refreshtoken: refreshtoken ?? db.sequelize.literal("refreshtoken"),
+                            total_cash: total_cash ?? db.sequelize.literal("total_cash")
+                        },
+                        {
+                            where: {
+                                uid: req.params.uid,
                             },
-                            {
-                                where: {
-                                    id: req.params.uid,
-                                },
-                            }
-                        );
-                        return res.status(200).send("User with ID: " + req.params.uid + " was changed successfully");
-                    }
-                })
-                .catch((err) => {
-                    return res.status(400).send(err.message);
-                });
-        } else {
-            // Функція була викликана з id та params
-            const id = arg1;
-            const params = arg2;
-        }
+                        }
+                    );
+                    return res.status(200).send("User with ID: " + req.params.uid + " was changed successfully");
+                }
+            })
+            .catch((err) => {
+                return res.status(400).send(err.message);
+            });
     }
 
     async getUserByID(req, res) {
