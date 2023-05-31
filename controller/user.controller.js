@@ -11,6 +11,22 @@ class UserController {
                 return res.status(400).send(err.message)
             })
     }
+    async getUserByAccessToken(req,res,isLocal){
+        const result = await User.findOne({
+            where:{
+                accesstoken:req.body.accessToken
+            }
+        })
+            if(result){
+                if(isLocal){
+                    return await result.json()
+                }
+                return res.status(200).send(result)
+            }
+            else{
+                return res.status(400).send(result)
+            }
+    }
     async addUser(req, res, isLocal) {
         const {uid,email,emailVerified,createdAt,lastLoginAt,apiKey} = req.body
         const { accessToken, refreshToken } = await generateTokens(uid,email,createdAt)
@@ -36,7 +52,7 @@ class UserController {
             })
             const default_categories = await DefaultCategory.findAll()
             for (const default_category of default_categories) {
-                await Category.create({
+                Category.create({
                     uid: result.uid,
                     name: default_category.name,
                     image_link: default_category.image_link,
@@ -46,7 +62,7 @@ class UserController {
                     isIncome: default_category.isIncome
                 })
             }
-            await Account.create({
+            Account.create({
                 uid: result.uid,
                 name: "Total",
                 cash: 0
@@ -88,19 +104,21 @@ class UserController {
                 return res.status(400).send(err.message)
             })
     }
-    async patchUserByID(req, res) {
-        await User.findOne({
-            where: {
-                id: req.params.uid,
-            },
-        })
+    async patchUserByID(arg1, arg2) {
+        if (typeof arg1 === 'object' && arg2 === undefined) {
+            // Функція була викликана з об'єктом параметрів
+            const req = arg1;
+            const res = arg2;
+            await User.findOne({
+                where: {
+                    id: req.params.uid,
+                },
+            })
             .then((result) => {
                 if (result === 0) {
-                    return res
-                        .status(400)
-                        .send("User with id " + req.params.uid + " not found.")
+                    return res.status(400).send("User with id " + req.params.uid + " not found.");
                 } else {
-                    const {uid,email,emailVerified,createdAt,lastLoginAt,apiKey} = req.body
+                    const {uid, email, emailVerified, createdAt, lastLoginAt, apiKey} = req.body;
                     User.update(
                         {
                             uid: uid ?? db.sequelize.literal("uid"),
@@ -115,14 +133,20 @@ class UserController {
                                 id: req.params.uid,
                             },
                         }
-                    )
-                    return res.status(200).send("User with ID: " + req.params.uid + " was changed successful")
+                    );
+                    return res.status(200).send("User with ID: " + req.params.uid + " was changed successfully");
                 }
             })
             .catch((err) => {
-                return res.status(400).send(err.message)
-            })
+                return res.status(400).send(err.message);
+            });
+        } else {
+            // Функція була викликана з id та params
+            const id = arg1;
+            const params = arg2;
+        }
     }
+    
     async getUserByID(req, res) {
         await User.findOne({
             where: {

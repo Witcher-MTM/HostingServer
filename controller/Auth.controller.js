@@ -6,8 +6,25 @@ class AuthController {
     await UserController.addUser(req, res)
   }
   async login(req, res) {
-    const {accessToken} = req.body
-    if(await jwt.verify(accessToken,process.env.SECRET_KEY)){
+    const {email} = req.body
+      try {
+        const result = await User.findOne({
+          where:{
+            email : email
+          }
+        })
+        if(result){
+          res.status(200).send(result)
+        }
+        else{
+          res.status(400).send(result)
+        }
+      } catch (error) {
+        res.status(400).send(error.message)
+      }
+    }
+    async loginByToken(req,res){
+      const {accessToken} = req.body
       try {
         const result = await User.findOne({
           where:{
@@ -23,13 +40,7 @@ class AuthController {
       } catch (error) {
         res.status(400).send(error.message)
       }
-        
-    }else{
-      console.log("jwt not verified")
-      res.status(403).send("jwt not verified")
     }
-    
-  }
 }
 
 module.exports = new AuthController()
