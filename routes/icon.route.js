@@ -1,6 +1,7 @@
 const express = require('express');
 const route = express.Router();
 const IconController = require('../controller/icon.controller')
+
 route.get('/',async(req,res)=>{
     await IconController.getIcons(req,res)
 })

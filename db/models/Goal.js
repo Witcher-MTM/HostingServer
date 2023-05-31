@@ -11,29 +11,34 @@ module.exports = function(sequelize){
             type: Sequelize.STRING,
             allowNull: false
           },
+        category_id: { 
+            type: Sequelize.INTEGER, 
+            allowNull: false 
+        },
         name: { 
             type: Sequelize.STRING, 
             allowNull: false 
         },
-        total_cash: { 
-            type: Sequelize.INTEGER, 
-            allowNull: false 
-        },
         cash: { 
-            type: Sequelize.INTEGER, 
+            type: Sequelize.FLOAT, 
             allowNull: false 
         },
-        deadline: { 
-            type: Sequelize.DATE, 
+        total_cash: { 
+            type: Sequelize.FLOAT, 
             allowNull: false 
         },
-        color: { 
-            type: Sequelize.STRING(20) 
+        last_income: { 
+            type: Sequelize.FLOAT,
+            allowNull: true
         },
-        category_id: {
-            type: Sequelize.INTEGER,
+        deadline: {
+            type: Sequelize.STRING,
             allowNull: false
-        }
+        },
+        date_last_income: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
       },{
         timestamps:false,
         tableName:'goal'

@@ -28,7 +28,7 @@ module.exports = function (sequelize) {
         },
         dateRemainde: 
         { 
-            type: Sequelize.DATE, 
+            type: Sequelize.STRING, 
             allowNull: false 
         }
     },{

@@ -12,16 +12,17 @@ class GoalController {
             })
     }
     async addGoal(req, res) {
-        const { uid, name, total_cash, cash, deadline, color, category_id } = req.body
+        const { uid, category_id, name, cash, total_cash, last_income,deadline,date_last_income  } = req.body
         try {
             const result = await Goal.create({
                 uid: uid,
+                category_id: category_id,
                 name: name,
-                total_cash: total_cash,
                 cash: cash,
+                total_cash: total_cash,
+                last_income: last_income,
                 deadline: deadline,
-                color: color,
-                category_id: category_id
+                date_last_income:date_last_income
             })
             return res.status(200).send(result)
         } catch (err) {
@@ -62,16 +63,17 @@ class GoalController {
             if (!result) {
                 return res.status(400).send("Goal with id " + req.params.goal_id + " not found.")
             } else {
-                const { uid, name, total_cash, cash, deadline, color, category_id } = req.body
+                const { uid, category_id, name, cash, total_cash, last_income,deadline,date_last_income  } = req.body
                 Goal.update(
                     {
                         uid: uid ?? db.sequelize.literal("uid"),
+                        category_id: category_id ?? db.sequelize.literal("category_id"),
                         name: name ?? db.sequelize.literal("name"),
-                        total_cash: total_cash ?? db.sequelize.literal("total_cash"),
                         cash: cash ?? db.sequelize.literal("cash"),
+                        total_cash: total_cash ?? db.sequelize.literal("total_cash"),
+                        last_income: last_income ?? db.sequelize.literal("last_income"),
                         deadline: deadline ?? db.sequelize.literal("deadline"),
-                        color: color ?? db.sequelize.literal("color"),
-                        category_id: category_id ?? db.sequelize.literal("category_id")
+                        date_last_income: date_last_income ?? db.sequelize.literal("date_last_income")
                     },
                     {
                         where: {
