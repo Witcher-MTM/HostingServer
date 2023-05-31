@@ -83,7 +83,7 @@ class UserController {
     async deleteUserByID(req, res) {
         await User.destroy({
             where: {
-                id: req.params.uid,
+                uid: req.params.uid,
             },
         })
             .then((result) => {
@@ -143,7 +143,7 @@ class UserController {
     async getUserByID(req, res) {
         await User.findOne({
             where: {
-                id: req.params.uid,
+                uid: req.params.uid,
             },
         })
             .then((result) => {
