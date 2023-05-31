@@ -1,6 +1,6 @@
-const {Remainder} = require('../db/index')
+const { Remainder } = require('../db/index')
 const db = require("../db")
-
+const CategoryController = require('./category.controller')
 class RemainderController {
     async getRemainders(req, res) {
         await Remainder.findAll()
@@ -19,8 +19,8 @@ class RemainderController {
                 uid: uid,
                 category_id: category_id,
                 name: name,
-                cash:cash,
-                dateRemainde:dateRemainde,
+                cash: cash,
+                dateRemainde: dateRemainde,
             })
             return res.status(200).send(result)
         } catch (err) {
@@ -69,8 +69,8 @@ class RemainderController {
                             uid: uid ?? db.sequelize.literal("uid"),
                             category_id: category_id ?? db.sequelize.literal("category_id"),
                             name: name ?? db.sequelize.literal("name"),
-                            cash:cash ?? db.sequelize.literal("cash"),
-                            dateRemainde:dateRemainde ?? db.sequelize.literal("dateRemainde")
+                            cash: cash ?? db.sequelize.literal("cash"),
+                            dateRemainde: dateRemainde ?? db.sequelize.literal("dateRemainde")
                         },
                         {
                             where: {
@@ -86,23 +86,42 @@ class RemainderController {
             })
     }
     async getRemainderByUserID(req, res) {
-        await Remainder.findAll({
-            where: {
-                uid: req.params.uid,
-            },
-        })
-            .then((result) => {
-                if (result.length > 0) {
-                    return res.status(200).send(result)
-                } else {
-                    return res
-                        .status(400)
-                        .send("User with " + req.params.uid + " haven't remainders")
-                }
+        const combinedRemainders = []
+        try {
+            const categories = await CategoryController.getCategories(req, res, true)
+            const result = await Remainder.findAll({
+                where: {
+                    uid: req.params.uid,
+                },
             })
-            .catch((err) => {
-                return res.status(400).send(err.message)
-            })
+            if (result.length > 0) {
+                for (const remainder of result) {
+                    for (const category of categories) {
+                      if (remainder.category_id === category.id) {
+                        combinedRemainders.push({
+                           'id': remainder.id,
+                          'uid': remainder.uid,
+                          'category_id': remainder.category_id,
+                          'name': remainder.name,
+                          'cash': remainder.cash,
+                          'dateRemainde':remainder.dateRemainde,
+                          'image_link': category.image_link,
+                          'image_color': category.image_color,
+                          'color':category.color
+                        })
+                      }
+                    }
+                  }
+                return res.status(200).send(combinedRemainders)
+            } else {
+                return res
+                    .status(400)
+                    .send("User with " + req.params.uid + " haven't remainders")
+            }
+        } catch (error) {
+            return res.status(400).send(error.message)
+        }
+
     }
     async getRemainderByID(req, res) {
         await Remainder.findOne({
@@ -116,7 +135,7 @@ class RemainderController {
                 } else {
                     return res
                         .status(400)
-                        .send("Remainder with "+ req.params.remainder_id + " id not found")
+                        .send("Remainder with " + req.params.remainder_id + " id not found")
                 }
             })
             .catch((err) => {

@@ -8,9 +8,6 @@ class TransactionController {
     try {
       const result = await Transaction.findAll()
       const categories = await CategoryController.getCategories(req, res, true)
-      if (!categories) {
-        throw new Error('Categories not found')
-      }
       for (const transaction of result) {
         for (const category of categories) {
           if (transaction.category_id === category.id) {

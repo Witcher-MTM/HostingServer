@@ -1,6 +1,6 @@
 const { Goal } = require('../db/index')
 const db = require('../db')
-
+const CategoryController = require('./category.controller')
 class GoalController {
     async getGoal(req, res) {
         await Goal.findAll()
@@ -12,7 +12,7 @@ class GoalController {
             })
     }
     async addGoal(req, res) {
-        const { uid, category_id, name, cash, total_cash, last_income,deadline,date_last_income  } = req.body
+        const { uid, category_id, name, cash, total_cash, last_income, deadline, date_last_income } = req.body
         try {
             const result = await Goal.create({
                 uid: uid,
@@ -22,7 +22,7 @@ class GoalController {
                 total_cash: total_cash,
                 last_income: last_income,
                 deadline: deadline,
-                date_last_income:date_last_income
+                date_last_income: date_last_income
             })
             return res.status(200).send(result)
         } catch (err) {
@@ -63,7 +63,7 @@ class GoalController {
             if (!result) {
                 return res.status(400).send("Goal with id " + req.params.goal_id + " not found.")
             } else {
-                const { uid, category_id, name, cash, total_cash, last_income,deadline,date_last_income  } = req.body
+                const { uid, category_id, name, cash, total_cash, last_income, deadline, date_last_income } = req.body
                 Goal.update(
                     {
                         uid: uid ?? db.sequelize.literal("uid"),
@@ -86,26 +86,48 @@ class GoalController {
         } catch (error) {
             return res.status(500).send(error.message)
         }
-        
+
     }
     async getGoalByUserID(req, res) {
-        await Goal.findAll({
+        const combinedGoals = []
+      try {
+        const categories = await CategoryController.getCategories(req, res, true)
+        const result = await Goal.findAll({
             where: {
                 uid: req.params.uid,
             },
         })
-            .then((result) => {
-                if (result.length > 0) {
-                    return res.status(200).send(result)
-                } else {
-                    return res
-                        .status(400)
-                        .send("User with " + req.params.uid + " haven't Goals")
+
+        if (result.length > 0) {
+            for (const goal of result) {
+                for (const category of categories) {
+                  if (goal.category_id === category.id) {
+                    combinedGoals.push({
+                       'id': goal.id,
+                      'uid': goal.uid,
+                      'category_id': goal.category_id,
+                      'name': goal.name,
+                      'cash': goal.cash,
+                      'total_cash':goal.total_cash,
+                      'last_income':goal.last_income,
+                      'deadline':goal.deadline,
+                      'date_last_income':goal.date_last_income,
+                      'image_link': category.image_link,
+                      'image_color': category.image_color,
+                      'color':category.color
+                    })
+                  }
                 }
-            })
-            .catch((err) => {
-                return res.status(400).send(err.message)
-            })
+              }
+              return res.status(200).send(combinedGoals)
+        } else {
+            return res
+                .status(400)
+                .send("User with " + req.params.uid + " haven't Goals")
+        }
+      } catch (error) {
+        return res.status(400).send(error.message)
+      }
     }
     async getGoalByID(req, res) {
         await Goal.findOne({
