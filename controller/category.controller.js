@@ -95,6 +95,7 @@ class CategoryController {
             })
     }
     async getCategoryByUserID(req, res) {
+        console.log(req.params.uid)
         await Category.findAll({
             where: {
                 uid: req.params.uid,

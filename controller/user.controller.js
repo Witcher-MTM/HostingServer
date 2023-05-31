@@ -11,25 +11,25 @@ class UserController {
                 return res.status(400).send(err.message)
             })
     }
-    async getUserByAccessToken(req,res,isLocal){
+    async getUserByAccessToken(req, res, isLocal) {
         const result = await User.findOne({
-            where:{
-                accesstoken:req.body.accessToken
+            where: {
+                accesstoken: req.body.accessToken
             }
         })
-            if(result){
-                if(isLocal){
-                    return await result.json()
-                }
-                return res.status(200).send(result)
+        if (result) {
+            if (isLocal) {
+                return await result.json()
             }
-            else{
-                return res.status(400).send(result)
-            }
+            return res.status(200).send(result)
+        }
+        else {
+            return res.status(400).send(result)
+        }
     }
     async addUser(req, res, isLocal) {
-        const {uid,email,emailVerified,createdAt,lastLoginAt,apiKey} = req.body
-        const { accessToken, refreshToken } = await generateTokens(uid,email,createdAt)
+        const { uid, email, emailVerified, createdAt, lastLoginAt, apiKey } = req.body
+        const { accessToken, refreshToken } = await generateTokens(uid, email, createdAt)
         try {
             await User.findOne({
                 where: {
@@ -41,18 +41,18 @@ class UserController {
                 }
             })
             const result = await User.create({
-                uid:uid,
+                uid: uid,
                 email: email,
                 emailVerified: emailVerified,
                 createdAt: createdAt,
                 lastLoginAt: lastLoginAt,
-                apiKey:apiKey,
-                accesstoken:accessToken,
-                refreshtoken:refreshToken
+                apiKey: apiKey,
+                accesstoken: accessToken,
+                refreshtoken: refreshToken
             })
             const default_categories = await DefaultCategory.findAll()
             for (const default_category of default_categories) {
-                Category.create({
+                await Category.create({
                     uid: result.uid,
                     name: default_category.name,
                     image_link: default_category.image_link,
@@ -62,7 +62,7 @@ class UserController {
                     isIncome: default_category.isIncome
                 })
             }
-            Account.create({
+            await Account.create({
                 uid: result.uid,
                 name: "Total",
                 cash: 0
@@ -70,10 +70,10 @@ class UserController {
             if (isLocal) {
                 return result
             }
-            if(result){
+            if (result) {
                 return res.status(200).send(result)
             }
-            else{
+            else {
                 return res.status(400).send("not found")
             }
         } catch (err) {
@@ -114,39 +114,39 @@ class UserController {
                     id: req.params.uid,
                 },
             })
-            .then((result) => {
-                if (result === 0) {
-                    return res.status(400).send("User with id " + req.params.uid + " not found.");
-                } else {
-                    const {uid, email, emailVerified, createdAt, lastLoginAt, apiKey} = req.body;
-                    User.update(
-                        {
-                            uid: uid ?? db.sequelize.literal("uid"),
-                            email: email ?? db.sequelize.literal("email"),
-                            emailVerified: emailVerified ?? db.sequelize.literal("emailVerified"),
-                            createdAt: createdAt ?? db.sequelize.literal("createdAt"),
-                            lastLoginAt: lastLoginAt ?? db.sequelize.literal("lastLoginAt"),
-                            apiKey: apiKey ?? db.sequelize.literal("apiKey"),
-                        },
-                        {
-                            where: {
-                                id: req.params.uid,
+                .then((result) => {
+                    if (result === 0) {
+                        return res.status(400).send("User with id " + req.params.uid + " not found.");
+                    } else {
+                        const { uid, email, emailVerified, createdAt, lastLoginAt, apiKey } = req.body;
+                        User.update(
+                            {
+                                uid: uid ?? db.sequelize.literal("uid"),
+                                email: email ?? db.sequelize.literal("email"),
+                                emailVerified: emailVerified ?? db.sequelize.literal("emailVerified"),
+                                createdAt: createdAt ?? db.sequelize.literal("createdAt"),
+                                lastLoginAt: lastLoginAt ?? db.sequelize.literal("lastLoginAt"),
+                                apiKey: apiKey ?? db.sequelize.literal("apiKey"),
                             },
-                        }
-                    );
-                    return res.status(200).send("User with ID: " + req.params.uid + " was changed successfully");
-                }
-            })
-            .catch((err) => {
-                return res.status(400).send(err.message);
-            });
+                            {
+                                where: {
+                                    id: req.params.uid,
+                                },
+                            }
+                        );
+                        return res.status(200).send("User with ID: " + req.params.uid + " was changed successfully");
+                    }
+                })
+                .catch((err) => {
+                    return res.status(400).send(err.message);
+                });
         } else {
             // Функція була викликана з id та params
             const id = arg1;
             const params = arg2;
         }
     }
-    
+
     async getUserByID(req, res) {
         await User.findOne({
             where: {
