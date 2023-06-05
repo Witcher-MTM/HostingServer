@@ -1,5 +1,6 @@
 const UserController = require('./user.controller')
 const jwt = require('jsonwebtoken')
+const {sequelize} = require('../db/index')
 const { User } = require('../db/index')
 class AuthController {
   async register(req, res) {
