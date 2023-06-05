@@ -25,7 +25,7 @@ module.exports = function(sequelize){
         allowNull: true
       },
       cash: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
         allowNull: false
       },
       isIncome: {
