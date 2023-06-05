@@ -2,7 +2,7 @@ const { Category } = require("../db/index")
 const db = require("../db")
 const { Op } = require('sequelize');
 class CategoryController {
-    async getCategories(req, res, local) {
+    async getCategories(req, res, isLocal) {
         const result = await Category.findAll({
             where: {
                 image_link: {
@@ -12,7 +12,7 @@ class CategoryController {
         }).catch((err) => {
             return res.status(400).send(err.message);
         })
-        if (local) {
+        if (isLocal) {
             return result;
         } else {
             return res.status(200).send(result);
@@ -88,7 +88,7 @@ class CategoryController {
             return res.status(400).send(error.message)
         }
     }
-    async getCategoryByUserID(req, res) {
+    async getCategoryByUserID(req, res,isLocal) {
         console.log(req.params.uid)
         try {
             const result = await Category.findAll({
@@ -97,8 +97,14 @@ class CategoryController {
                 },
             })
             if (result.length > 0) {
+                if(isLocal){
+                    return result;
+                }
                 return res.status(200).send(result)
             } else {
+                if(isLocal){
+                    return null;
+                }
                 return res
                     .status(400)
                     .send("User with id: " + req.params.uid + " haven't any Category")

@@ -1,14 +1,19 @@
 const { DefaultCategory } = require("../db/index")
 const db = require("../db")
 class DefaultCategoryController {
-    async getDefaultCategories(req, res) {
-        await DefaultCategory.findAll()
-            .then((result) => {
-                return res.status(200).send(result)
-            })
-            .catch((err) => {
-                return res.status(400).send(err.message)
-            })
+    async getDefaultCategories(req, res,isLocal) {
+        try {
+            const result = await DefaultCategory.findAll()      
+            if(isLocal){
+                return result
+            }
+            return res.status(200).send(result)
+        } catch (error) {
+            if(isLocal){
+                return null
+            }
+            return res.status(400).send(err.message)
+        }
     }
     async addCategory(req, res) {
         const { name, image_link, image_color, color, isIncome } = req.body

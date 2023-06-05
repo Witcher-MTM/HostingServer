@@ -148,7 +148,7 @@ class TransactionController {
       }
     } else {
       if (isLocal) {
-        return
+        return null
       }
       else {
         return res

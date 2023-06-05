@@ -1,14 +1,20 @@
 const { Icon } = require("../db/index")
 const db = require("../db")
 class IconController {
-    async getIcons(req, res) {
-        await Icon.findAll()
-            .then((result) => {
-                return res.status(200).send(result)
-            })
-            .catch((err) => {
-                return res.status(400).send(err.message)
-            })
+    async getIcons(req, res,isLocal) {
+        try {
+            const result = await Icon.findAll()
+            if(isLocal){
+                return result
+            }
+            return res.status(200).send(result)
+            
+        } catch (error) {
+            if(isLocal){
+                return null
+            }
+            return res.status(400).send()
+        }
     }
     async addIcon(req, res) {
         const { image_link, image_color, color, category_id } = req.body

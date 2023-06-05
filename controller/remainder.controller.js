@@ -85,7 +85,7 @@ class RemainderController {
                 return res.status(400).send(err.message)
             })
     }
-    async getRemainderByUserID(req, res) {
+    async getRemainderByUserID(req, res,isLocal) {
         const combinedRemainders = []
         try {
             const categories = await CategoryController.getCategories(req, res, true)
@@ -112,8 +112,14 @@ class RemainderController {
                       }
                     }
                   }
+                  if(isLocal){
+                    return combinedRemainders
+                  }
                 return res.status(200).send(combinedRemainders)
             } else {
+                if(isLocal){
+                    return null
+                  }
                 return res
                     .status(400)
                     .send("User with " + req.params.uid + " haven't remainders")

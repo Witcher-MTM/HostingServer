@@ -1,6 +1,6 @@
 const UserController = require('./user.controller')
 const jwt = require('jsonwebtoken')
-const {sequelize} = require('../db/index')
+const {sequelize} = require('../db')
 const { User } = require('../db/index')
 class AuthController {
   async register(req, res) {
@@ -29,6 +29,7 @@ class AuthController {
     try {
       await sequelize.query("SET SESSION wait_timeout = 3600;");
       await sequelize.query("SET SESSION interactive_timeout = 3600;");
+      console.log("log by token")
       const result = await User.findOne({
         where: {
           accesstoken: accessToken

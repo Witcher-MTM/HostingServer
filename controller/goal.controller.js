@@ -88,7 +88,7 @@ class GoalController {
         }
 
     }
-    async getGoalByUserID(req, res) {
+    async getGoalByUserID(req, res,isLocal) {
         const combinedGoals = []
       try {
         const categories = await CategoryController.getCategories(req, res, true)
@@ -119,8 +119,14 @@ class GoalController {
                   }
                 }
               }
+              if(isLocal){
+                return combinedGoals;
+              }
               return res.status(200).send(combinedGoals)
         } else {
+            if(isLocal){
+                return null;
+              }
             return res
                 .status(400)
                 .send("User with " + req.params.uid + " haven't Goals")
