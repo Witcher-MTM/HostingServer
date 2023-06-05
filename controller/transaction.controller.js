@@ -37,101 +37,95 @@ class TransactionController {
     var combinedTransaction = {};
     const { category_id, uid, date, comment, cash, isIncome } = req.body
     try {
-      await Transaction.create({
+      const result = await Transaction.create({
         category_id: category_id,
         uid: uid,
         date: date,
         comment: comment,
         cash: cash,
         isIncome: isIncome,
-      }).then(async (result) => {
-        const categories = await CategoryController.getCategories(req, res, true)
-        if (!categories) {
-          throw new Error('Categories not found')
-        }
-        for (const category of categories) {
-          if (result.category_id === category.id) {
-            const formattedDate = FormattedDate.toDate(result.date)
-            combinedTransaction = ({
-              'x': category.name,
-              'y': result.cash,
-              'fill': category.color,
-              'id': result.id,
-              'comment': result.comment,
-              'image_link': category.image_link,
-              'image_color': category.image_color,
-              'isIncome': result.isIncome,
-              'date': formattedDate,
-              'category_id': category.id
-            })
-          }
-        }
       })
+      const categories = await CategoryController.getCategories(req, res, true)
+      for (const category of categories) {
+        if (result.category_id === category.id) {
+          const formattedDate = FormattedDate.toDate(result.date)
+          combinedTransaction = ({
+            'x': category.name,
+            'y': result.cash,
+            'fill': category.color,
+            'id': result.id,
+            'comment': result.comment,
+            'image_link': category.image_link,
+            'image_color': category.image_color,
+            'isIncome': result.isIncome,
+            'date': formattedDate,
+            'category_id': category.id
+          })
+        }
+      }
       return res.status(200).send(combinedTransaction)
     } catch (err) {
       return res.status(400).send(err.message)
     }
   }
   async deleteTransactionByID(req, res) {
-    await Transaction.destroy({
-      where: {
-        id: req.params.transaction_id,
-      },
-    })
-      .then((result) => {
-        if (result === 0) {
-          return res
-            .status(400)
-            .send("Transaction with id " + req.params.transaction_id + " not found.")
-        }
+    try {
+      const result = await Transaction.destroy({
+        where: {
+          id: req.params.transaction_id,
+        },
+      })
+      if (result === 0) {
         return res
-          .status(200)
-          .send(
-            "Transaction with id " +
-            req.params.transaction_id +
-            " was deleted successfully."
-          )
-      })
-      .catch((err) => {
-        return res.status(400).send(err.message)
-      })
+          .status(400)
+          .send("Transaction with id " + req.params.transaction_id + " not found.")
+      }
+      return res
+        .status(200)
+        .send(
+          "Transaction with id " +
+          req.params.transaction_id +
+          " was deleted successfully."
+        )
+    } catch (error) {
+      return res.status(400).send(err.message)
+    }
   }
   async patchTransactionByID(req, res) {
-    await Transaction.findOne({
-      where: {
-        id: req.params.transaction_id,
-      },
-    })
-      .then((result) => {
-        if (result === 0) {
-          return res
-            .status(400)
-            .send("Transaction with id " + req.params.transaction_id + " not found.")
-        } else {
-          const { category_id, uid, date, comment, cash, isIncome } =
-            req.body
-          Transaction.update(
-            {
-              category_id: category_id ?? db.sequelize.literal("category_id"),
-              uid: uid ?? db.sequelize.literal("uid"),
-              date: date ?? db.sequelize.literal("date"),
-              comment: comment ?? db.sequelize.literal("comment"),
-              cash: cash ?? db.sequelize.literal("cash"),
-              isIncome: isIncome ?? db.sequelize.literal("isIncome"),
-            },
-            {
-              where: {
-                id: req.params.transaction_id,
+    try {
+      const result = await Transaction.findOne({
+        where: {
+          id: req.params.transaction_id,
+        },
+      })
+          if (result === 0) {
+            return res
+              .status(400)
+              .send("Transaction with id " + req.params.transaction_id + " not found.")
+          } else {
+            const { category_id, uid, date, comment, cash, isIncome } = req.body
+            await Transaction.update(
+              {
+                category_id: category_id ?? db.sequelize.literal("category_id"),
+                uid: uid ?? db.sequelize.literal("uid"),
+                date: date ?? db.sequelize.literal("date"),
+                comment: comment ?? db.sequelize.literal("comment"),
+                cash: cash ?? db.sequelize.literal("cash"),
+                isIncome: isIncome ?? db.sequelize.literal("isIncome"),
               },
-            }
-          ).then(() => {
-            return res.status(200).send("Transaction with ID: " + req.params.transaction_id + " was changed successful")
-          })
-        }
-      })
-      .catch((err) => {
-        return res.status(400).send(err.message)
-      })
+              {
+                where: {
+                  id: req.params.transaction_id,
+                },
+              }
+            ).then(() => {
+              return res.status(200).send("Transaction with ID: " + req.params.transaction_id + " was changed successful")
+            })
+          }    
+    } catch (error) {
+      return res.status(400).send(err.message)
+    }
+
   }
   async getTransactionsByUserID(req, res, isLocal) {
 
@@ -158,23 +152,22 @@ class TransactionController {
     }
   }
   async getTransactionByID(req, res) {
-    await Transaction.findOne({
-      where: {
-        id: req.params.transaction_id,
-      },
-    })
-      .then((result) => {
-        if (result) {
-          return res.status(200).send(result)
-        } else {
-          return res
-            .status(400)
-            .send("Transaction with " + req.params.transaction_id + " id not found")
-        }
+    try {
+      const result = await Transaction.findOne({
+        where: {
+          id: req.params.transaction_id,
+        },
       })
-      .catch((err) => {
-        return res.status(400).send(err.message)
-      })
+          if (result) {
+            return res.status(200).send(result)
+          } else {
+            return res
+              .status(400)
+              .send("Transaction with " + req.params.transaction_id + " id not found")
+          }
+    } catch (error) {
+      return res.status(400).send(err.message)
+    }
   }
 }
 module.exports = new TransactionController()

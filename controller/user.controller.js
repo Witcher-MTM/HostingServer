@@ -31,15 +31,14 @@ class UserController {
         const { uid, email, emailVerified, createdAt, lastLoginAt } = req.body
         const { accessToken, refreshToken } = await generateTokens(uid, email, createdAt)
         try {
-            await User.findOne({
+            const candidate = await User.findOne({
                 where: {
                     email: email
                 }
-            }).then((candidate) => {
-                if (candidate) {
-                    return res.status(403).send("That email is taken")
-                }
             })
+            if (candidate) {
+                return res.status(403).send("That email is taken")
+            }
             const result = await User.create({
                 uid: uid,
                 email: email,
@@ -62,20 +61,10 @@ class UserController {
                     isIncome: default_category.isIncome
                 })
             }
-            await Account.create({
-                uid: result.uid,
-                name: "Total",
-                cash: 0
-            })
             if (isLocal) {
                 return result
             }
-            if (result) {
-                return res.status(200).send(result)
-            }
-            else {
-                return res.status(400).send("not found")
-            }
+            return res.status(200).send(result)
         } catch (err) {
             return res.send(err.message)
         }
@@ -105,40 +94,39 @@ class UserController {
             })
     }
     async patchUserByID(req, res) {
-        await User.findOne({
-            where: {
-                uid: req.params.uid,
-            },
-        })
-            .then((result) => {
-                if (result === 0) {
-                    return res.status(400).send("User with id " + req.params.uid + " not found.");
-                } else {
-                    const { uid, email, emailVerified,avatar, createdAt, lastLoginAt,accesstoken,refreshtoken,total_cash } = req.body;
-                    User.update(
-                        {
-                            uid: uid ?? db.sequelize.literal("uid"),
-                            email: email ?? db.sequelize.literal("email"),
-                            emailVerified: emailVerified ?? db.sequelize.literal("emailVerified"),
-                            avatar: avatar ?? db.sequelize.literal("avatar"),
-                            createdAt: createdAt ?? db.sequelize.literal("createdAt"),
-                            lastLoginAt: lastLoginAt ?? db.sequelize.literal("lastLoginAt"),
-                            accesstoken: accesstoken ?? db.sequelize.literal("accesstoken"),
-                            refreshtoken: refreshtoken ?? db.sequelize.literal("refreshtoken"),
-                            total_cash: total_cash ?? db.sequelize.literal("total_cash")
-                        },
-                        {
-                            where: {
-                                uid: req.params.uid,
-                            },
-                        }
-                    );
-                    return res.status(200).send("User with ID: " + req.params.uid + " was changed successfully");
-                }
+        try {
+            const result = await User.findOne({
+                where: {
+                    uid: req.params.uid,
+                },
             })
-            .catch((err) => {
-                return res.status(400).send(err.message);
-            });
+            if (result === 0) {
+                return res.status(400).send("User with id " + req.params.uid + " not found.");
+            } else {
+                const { uid, email, emailVerified, avatar, createdAt, lastLoginAt, accesstoken, refreshtoken, total_cash } = req.body;
+                User.update(
+                    {
+                        uid: uid ?? db.sequelize.literal("uid"),
+                        email: email ?? db.sequelize.literal("email"),
+                        emailVerified: emailVerified ?? db.sequelize.literal("emailVerified"),
+                        avatar: avatar ?? db.sequelize.literal("avatar"),
+                        createdAt: createdAt ?? db.sequelize.literal("createdAt"),
+                        lastLoginAt: lastLoginAt ?? db.sequelize.literal("lastLoginAt"),
+                        accesstoken: accesstoken ?? db.sequelize.literal("accesstoken"),
+                        refreshtoken: refreshtoken ?? db.sequelize.literal("refreshtoken"),
+                        total_cash: total_cash ?? db.sequelize.literal("total_cash")
+                    },
+                    {
+                        where: {
+                            uid: req.params.uid,
+                        },
+                    }
+                );
+                return res.status(200).send("User with ID: " + req.params.uid + " was changed successfully");
+            }
+        } catch (error) {
+            return res.status(400).send(err.message);
+        }
     }
 
     async getUserByID(req, res) {
