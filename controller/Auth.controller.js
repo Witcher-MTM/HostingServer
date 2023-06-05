@@ -26,6 +26,8 @@ class AuthController {
   async loginByToken(req, res) {
     const { accessToken } = req.body
     try {
+      await sequelize.query("SET SESSION wait_timeout = 3600;");
+      await sequelize.query("SET SESSION interactive_timeout = 3600;");
       const result = await User.findOne({
         where: {
           accesstoken: accessToken
