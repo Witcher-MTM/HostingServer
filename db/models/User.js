@@ -15,10 +15,6 @@ module.exports = function (sequelize) {
       type: Sequelize.BOOLEAN,
       allowNull: false
     },
-    avatar: {
-      type: Sequelize.BLOB,
-      allowNull: true
-    },
     createdAt: {
       type: Sequelize.STRING,
       allowNull: false
