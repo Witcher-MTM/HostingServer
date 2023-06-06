@@ -36,7 +36,11 @@ module.exports = function (sequelize) {
     total_cash: {
       type: Sequelize.FLOAT,
       allowNull: false
-    }
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
   }, {
     timestamps: false,
     tableName: 'user'

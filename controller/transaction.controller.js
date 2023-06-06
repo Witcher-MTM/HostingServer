@@ -41,7 +41,6 @@ class TransactionController {
     try {
       await sequelize.query("SET SESSION wait_timeout = 100;");
       await sequelize.query("SET SESSION interactive_timeout = 100;");
-
       const result = await Transaction.create({
         category_id: category_id,
         uid: uid,

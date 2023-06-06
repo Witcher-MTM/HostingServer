@@ -28,7 +28,7 @@ class UserController {
         }
     }
     async addUser(req, res, isLocal) {
-        const { uid, email, emailVerified, createdAt, lastLoginAt } = req.body
+        const { uid, email, emailVerified, createdAt, lastLoginAt, name } = req.body
         const { accessToken, refreshToken } = await generateTokens(uid, email, createdAt)
         try {
             const candidate = await User.findOne({
@@ -47,7 +47,8 @@ class UserController {
                 lastLoginAt: lastLoginAt,
                 accesstoken: accessToken,
                 refreshtoken: refreshToken,
-                total_cash: 0
+                total_cash: 0,
+                name: name
             })
             const default_categories = await DefaultCategory.findAll()
             for (const default_category of default_categories) {
@@ -103,7 +104,7 @@ class UserController {
             if (result === 0) {
                 return res.status(400).send("User with id " + req.params.uid + " not found.");
             } else {
-                const { uid, email, emailVerified, createdAt, lastLoginAt, accesstoken, refreshtoken, total_cash } = req.body;
+                const { uid, email, emailVerified, createdAt, lastLoginAt, accesstoken, refreshtoken, total_cash,name } = req.body;
                 User.update(
                     {
                         uid: uid ?? db.sequelize.literal("uid"),
@@ -113,7 +114,8 @@ class UserController {
                         lastLoginAt: lastLoginAt ?? db.sequelize.literal("lastLoginAt"),
                         accesstoken: accesstoken ?? db.sequelize.literal("accesstoken"),
                         refreshtoken: refreshtoken ?? db.sequelize.literal("refreshtoken"),
-                        total_cash: total_cash ?? db.sequelize.literal("total_cash")
+                        total_cash: total_cash ?? db.sequelize.literal("total_cash"),
+                        name: name ?? db.sequelize.literal("name")
                     },
                     {
                         where: {
