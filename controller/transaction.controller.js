@@ -37,6 +37,8 @@ class TransactionController {
     var combinedTransaction = {};
     const { category_id, uid, date, comment, cash, isIncome } = req.body
     try {
+      await sequelize.query("SET SESSION wait_timeout = 100;");
+      await sequelize.query("SET SESSION interactive_timeout = 100;");
       const result = await Transaction.create({
         category_id: category_id,
         uid: uid,
@@ -104,6 +106,8 @@ class TransactionController {
               .send("Transaction with id " + req.params.transaction_id + " not found.")
           } else {
             const { category_id, uid, date, comment, cash, isIncome } = req.body
+            await sequelize.query("SET SESSION wait_timeout = 100;");
+            await sequelize.query("SET SESSION interactive_timeout = 100;");
             await Transaction.update(
               {
                 category_id: category_id ?? db.sequelize.literal("category_id"),
