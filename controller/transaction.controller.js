@@ -2,6 +2,7 @@ const { Transaction } = require("../db/index")
 const db = require("../db")
 const CategoryController = require('./category.controller')
 const FormattedDate = require('../module/FormattedDate')
+const { sequelize } = require('../db')
 class TransactionController {
   async getTransactions(req, res) {
     const combinedTransactions = []
@@ -29,6 +30,7 @@ class TransactionController {
       }
       return res.status(200).send(combinedTransactions)
     } catch (err) {
+      console.log(err.message)
       return res.status(400).send(err.message)
     }
 
@@ -39,6 +41,7 @@ class TransactionController {
     try {
       await sequelize.query("SET SESSION wait_timeout = 100;");
       await sequelize.query("SET SESSION interactive_timeout = 100;");
+
       const result = await Transaction.create({
         category_id: category_id,
         uid: uid,
@@ -47,11 +50,12 @@ class TransactionController {
         cash: cash,
         isIncome: isIncome,
       })
+      console.log('result transaction', result)
       const categories = await CategoryController.getCategories(req, res, true)
       for (const category of categories) {
         if (result.category_id === category.id) {
           const formattedDate = FormattedDate.toDate(result.date)
-          combinedTransaction = ({
+          combinedTransaction = {
             'x': category.name,
             'y': result.cash,
             'fill': category.color,
@@ -62,11 +66,13 @@ class TransactionController {
             'isIncome': result.isIncome,
             'date': formattedDate,
             'category_id': category.id
-          })
+          }
         }
       }
+      console.log("\n\n\n\nCombined", combinedTransaction)
       return res.status(200).send(combinedTransaction)
     } catch (err) {
+      console.log(err.message)
       return res.status(400).send(err.message)
     }
   }

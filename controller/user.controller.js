@@ -124,7 +124,7 @@ class UserController {
                 return res.status(200).send("User with ID: " + req.params.uid + " was changed successfully");
             }
         } catch (error) {
-            return res.status(400).send(err.message);
+            return res.status(400).send(error.message);
         }
     }
 
