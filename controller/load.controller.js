@@ -37,7 +37,6 @@ class LoadController {
                     }
                 }
             }
-            console.log(icons)
             const data={
                 category:categoriesByUserID,
                 icons:icons,
