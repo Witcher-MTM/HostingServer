@@ -6,34 +6,39 @@ const DefaultCategories_Controller = require('./defaultCategory.controller')
 const GoalController = require('./goal.controller')
 const RemainderController = require('./remainder.controller')
 const FormattedDate = require('../module/FormattedDate')
+const { sequelize } = require('../db')
 class LoadController {
 
     async LoadData(req, res) {
+        console.log("\n\n\n\n\n\nLOAD START\n\n")
         try {
+            await sequelize.query("SET SESSION wait_timeout = 400;");
+            await sequelize.query("SET SESSION interactive_timeout = 400;");
             const transactions = await TransactionController.getTransactionsByUserID(req, res, true)
-            const categories = await CategoryController.getCategories(req, res, true)
             const categoriesByUserID = await CategoryController.getCategoryByUserID(req, res,true)
             const icons = await IconController.getIcons(req,res,true)
             const default_categories = await DefaultCategories_Controller.getDefaultCategories(req,res,true)
             const goalsByUserID = await GoalController.getGoalByUserID(req,res,true)
             const remaindersByUserID = await RemainderController.getRemainderByUserID(req,res,true)
             const combinedTransactions = []
-            for (const transaction of transactions) {
-                for (const category of categories) {
-                    if (transaction.category_id === category.id) {
-                        const formattedDate = FormattedDate.toDate(transaction.date)
-                        combinedTransactions.push({
-                            'x': category.name,
-                            'y': transaction.cash,
-                            'fill': category.color,
-                            'id': transaction.id,
-                            'comment': transaction.comment,
-                            'image_link': category.image_link,
-                            'image_color': category.image_color,
-                            'isIncome': transaction.isIncome,
-                            'date': formattedDate,
-                            'category_id': category.id
-                        })
+            if(transactions != null){
+                for (const transaction of transactions) {
+                    for (const category of categoriesByUserID) {
+                        if (transaction.category_id === category.id) {
+                            const formattedDate = FormattedDate.toDate(transaction.date)
+                            combinedTransactions.push({
+                                'x': category.name,
+                                'y': transaction.cash,
+                                'fill': category.color,
+                                'id': transaction.id,
+                                'comment': transaction.comment,
+                                'image_link': category.image_link,
+                                'image_color': category.image_color,
+                                'isIncome': transaction.isIncome,
+                                'date': formattedDate,
+                                'category_id': category.id
+                            })
+                        }
                     }
                 }
             }
