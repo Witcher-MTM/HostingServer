@@ -94,7 +94,7 @@ class GoalController {
         const categories = await CategoryController.getCategories(req, res, true)
         const result = await Goal.findAll({
             where: {
-                uid: req.params.uid,
+                uid: req.params.uid ? req.params.uid : req.body.uid,
             },
         })
 

@@ -141,7 +141,7 @@ class TransactionController {
 
     const result = await Transaction.findAll({
       where: {
-        uid: req.body.uid == null ? req.params.uid : req.body.uid,
+        uid: req.params.uid ? req.params.uid : req.body.uid,
       },
     })
     if (result.length > 0) {

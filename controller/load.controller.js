@@ -11,6 +11,7 @@ class LoadController {
 
     async LoadData(req, res) {
         console.log("\n\n\n\n\n\nLOAD START\n\n")
+        console.log("req in load",req.params)
         try {
             await sequelize.query("SET SESSION wait_timeout = 400;");
             await sequelize.query("SET SESSION interactive_timeout = 400;");

@@ -91,7 +91,7 @@ class RemainderController {
             const categories = await CategoryController.getCategories(req, res, true)
             const result = await Remainder.findAll({
                 where: {
-                    uid: req.params.uid,
+                    uid: req.params.uid ? req.params.uid : req.body.uid,
                 },
             })
             if (result.length > 0) {
