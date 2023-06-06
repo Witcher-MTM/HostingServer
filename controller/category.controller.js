@@ -88,21 +88,21 @@ class CategoryController {
             return res.status(400).send(error.message)
         }
     }
-    async getCategoryByUserID(req, res,isLocal) {
-        console.log(req.params.uid)
+    async getCategoryByUserID(req, res, isLocal) {
+        console.log(req.params.uid ? req.params.uid : req.body.uid)
         try {
             const result = await Category.findAll({
                 where: {
-                    uid: req.params.uid,
+                    uid: req.params.uid ? req.params.uid : req.body.uid,
                 },
             })
             if (result.length > 0) {
-                if(isLocal){
+                if (isLocal) {
                     return result;
                 }
                 return res.status(200).send(result)
             } else {
-                if(isLocal){
+                if (isLocal) {
                     return null;
                 }
                 return res

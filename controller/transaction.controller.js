@@ -51,7 +51,7 @@ class TransactionController {
         isIncome: isIncome,
       })
       console.log('result transaction', result)
-      const categories = await CategoryController.getCategories(req, res, true)
+      const categories = await CategoryController.getCategoryByUserID(req, res, true)
       for (const category of categories) {
         if (result.category_id === category.id) {
           const formattedDate = FormattedDate.toDate(result.date)
