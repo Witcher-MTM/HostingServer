@@ -34,7 +34,7 @@ class AuthController {
           accesstoken: accessToken
         }
       })
-      console.log("result log by token",result)
+      console.log("\n\nresult log by token",result,"\n\n")
       res.status(200).send(result)
     } catch (error) {
       res.status(400).send(error.message)
