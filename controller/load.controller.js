@@ -7,6 +7,7 @@ const GoalController = require('./goal.controller')
 const RemainderController = require('./remainder.controller')
 const FormattedDate = require('../module/FormattedDate')
 const { sequelize } = require('../db')
+const avatarsController = require("./avatars.controller")
 class LoadController {
 
     async LoadData(req, res) {
@@ -21,6 +22,7 @@ class LoadController {
             const default_categories = await DefaultCategories_Controller.getDefaultCategories(req,res,true)
             const goalsByUserID = await GoalController.getGoalByUserID(req,res,true)
             const remaindersByUserID = await RemainderController.getRemainderByUserID(req,res,true)
+            const avatar = await avatarsController.GetAvatarByID(req,res,true)
             const combinedTransactions = []
             if(transactions != null){
                 for (const transaction of transactions) {
@@ -45,6 +47,7 @@ class LoadController {
             }
             const data={
                 category:categoriesByUserID,
+                avatar:avatar,
                 icons:icons,
                 default_categories:default_categories,
                 goal:goalsByUserID,

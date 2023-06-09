@@ -41,6 +41,7 @@ class UserController {
             }
             const result = await User.create({
                 uid: uid,
+                avatar_id:0,
                 email: email,
                 emailVerified: emailVerified,
                 createdAt: createdAt,
@@ -104,10 +105,11 @@ class UserController {
             if (result === 0) {
                 return res.status(400).send("User with id " + req.params.uid + " not found.");
             } else {
-                const { uid, email, emailVerified, createdAt, lastLoginAt, accesstoken, refreshtoken, total_cash,name } = req.body;
+                const { uid, avatar_id, email, emailVerified, createdAt, lastLoginAt, accesstoken, refreshtoken, total_cash,name } = req.body;
                 User.update(
                     {
                         uid: uid ?? db.sequelize.literal("uid"),
+                        avatar_id: avatar_id ?? db.sequelize.literal("avatar_id"),
                         email: email ?? db.sequelize.literal("email"),
                         emailVerified: emailVerified ?? db.sequelize.literal("emailVerified"),
                         createdAt: createdAt ?? db.sequelize.literal("createdAt"),
