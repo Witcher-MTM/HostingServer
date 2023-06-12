@@ -24,7 +24,7 @@ class AuthController {
           result.accesstoken = refreshResult;
           await User.update(
             { accesstoken: refreshResult ?? db.sequelize.literal("accesstoken") },
-            { where: { accesstoken: accessToken } }
+            { where: { accesstoken: accesstoken } }
           );
         }
         res.status(200).send(result)
