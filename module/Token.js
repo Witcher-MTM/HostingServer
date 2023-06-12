@@ -23,7 +23,7 @@ class Token {
       const newAccessToken = await jwt.sign(
         { uid, email, createdAt },
         process.env.SECRET_KEY,
-        { expiresIn: '30m' }
+        { expiresIn: '60m' }
       );
       return newAccessToken;
     } catch (error) {

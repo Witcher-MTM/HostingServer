@@ -5,9 +5,10 @@ const IconController = require('./icon.controller')
 const DefaultCategories_Controller = require('./defaultCategory.controller')
 const GoalController = require('./goal.controller')
 const RemainderController = require('./remainder.controller')
-const FormattedDate = require('../module/FormattedDate')
 const { sequelize } = require('../db')
 const avatarsController = require("./avatars.controller")
+const moment = require("moment")
+
 class LoadController {
 
     async LoadData(req, res) {
@@ -28,7 +29,6 @@ class LoadController {
                 for (const transaction of transactions) {
                     for (const category of categoriesByUserID) {
                         if (transaction.category_id === category.id) {
-                            const formattedDate = FormattedDate.toDate(transaction.date)
                             combinedTransactions.push({
                                 'x': category.name,
                                 'y': transaction.cash,
@@ -38,7 +38,7 @@ class LoadController {
                                 'image_link': category.image_link,
                                 'image_color': category.image_color,
                                 'isIncome': transaction.isIncome,
-                                'date': formattedDate,
+                                'date': moment(transaction.date).format("YYYY-MM-DD"),
                                 'category_id': category.id
                             })
                         }

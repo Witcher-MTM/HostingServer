@@ -1,8 +1,9 @@
 const { Transaction } = require("../db/index")
 const db = require("../db")
 const CategoryController = require('./category.controller')
-const FormattedDate = require('../module/FormattedDate')
 const { sequelize } = require('../db')
+const moment = require("moment")
+
 class TransactionController {
   async getTransactions(req, res) {
     const combinedTransactions = []
@@ -12,7 +13,6 @@ class TransactionController {
       for (const transaction of result) {
         for (const category of categories) {
           if (transaction.category_id === category.id) {
-            const formattedDate = FormattedDate.toDate(transaction.date)
             combinedTransactions.push({
               'x': category.name,
               'y': transaction.cash,
@@ -22,7 +22,7 @@ class TransactionController {
               'image_link': category.image_link,
               'image_color': category.image_color,
               'isIncome': transaction.isIncome,
-              'date': formattedDate,
+              'date': moment(transaction.date).format("YYYY-MM-DD"),
               'category_id': category.id
             })
           }
@@ -53,7 +53,6 @@ class TransactionController {
       const categories = await CategoryController.getCategoryByUserID(req, res, true)
       for (const category of categories) {
         if (result.category_id === category.id) {
-          const formattedDate = FormattedDate.toDate(result.date)
           combinedTransaction = {
             'x': category.name,
             'y': result.cash,
@@ -63,7 +62,7 @@ class TransactionController {
             'image_link': category.image_link,
             'image_color': category.image_color,
             'isIncome': result.isIncome,
-            'date': formattedDate,
+            'date': moment(result.date).format("YYYY-MM-DD"),
             'category_id': category.id
           }
         }
