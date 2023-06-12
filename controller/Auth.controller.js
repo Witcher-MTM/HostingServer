@@ -21,11 +21,11 @@ class AuthController {
         if (!verifyResult) {
           const refreshResult = await refreshUserToken(result.refreshtoken);
           console.log("Status in refresh", refreshResult);
-          result.accesstoken = refreshResult;
           await User.update(
             { accesstoken: refreshResult ?? db.sequelize.literal("accesstoken") },
-            { where: { accesstoken: accesstoken } }
+            { where: { accesstoken: result.accesstoken } }
           );
+          result.accesstoken = refreshResult;
         }
         res.status(200).send(result)
       }
