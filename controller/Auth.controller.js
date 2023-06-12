@@ -1,6 +1,7 @@
 const UserController = require('./user.controller')
 const { sequelize } = require('../db')
 const { User } = require('../db/index')
+const { verifyAccessToken, refreshToken, refreshUserToken } = require('../module/Token')
 class AuthController {
   async register(req, res) {
     await UserController.addUser(req, res)
@@ -13,7 +14,19 @@ class AuthController {
           email: email
         }
       })
+
       if (result) {
+        const verifyResult = await verifyAccessToken(result.accesstoken);
+        console.log("Status in verify", verifyResult);
+        if (!verifyResult) {
+          const refreshResult = await refreshUserToken(result.refreshtoken);
+          console.log("Status in refresh", refreshResult);
+          result.accesstoken = refreshResult;
+          await User.update(
+            { accesstoken: refreshResult ?? db.sequelize.literal("accesstoken") },
+            { where: { accesstoken: accessToken } }
+          );
+        }
         res.status(200).send(result)
       }
       else {
@@ -34,11 +47,21 @@ class AuthController {
           accesstoken: accessToken
         }
       })
-      console.log("\n\nresult log by token",result,"\n\n")
-      res.status(200).send(result)
-    } catch (error) {
-      res.status(400).send(error.message)
-    }
+        const verifyResult = await verifyAccessToken(result.accesstoken);
+        console.log("Status in verify", verifyResult);
+        if (!verifyResult) {
+          const refreshResult = await refreshUserToken(result.refreshtoken);
+          console.log("Status in refresh", refreshResult);
+          result.accesstoken = refreshResult;
+          await User.update(
+            { accesstoken: refreshResult ?? db.sequelize.literal("accesstoken") },
+            { where: { accesstoken: accessToken } }
+          );
+        }
+        return res.status(200).send(result);
+      } catch (error) {
+        res.status(400).send(error.message);
+      }      
   }
 }
 

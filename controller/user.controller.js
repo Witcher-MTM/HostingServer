@@ -106,6 +106,7 @@ class UserController {
                 return res.status(400).send("User with id " + req.params.uid + " not found.");
             } else {
                 const { uid, avatar_id, email, emailVerified, createdAt, lastLoginAt, accesstoken, refreshtoken, total_cash,name } = req.body;
+                console.log("avatar id ",avatar_id)
                 User.update(
                     {
                         uid: uid ?? db.sequelize.literal("uid"),

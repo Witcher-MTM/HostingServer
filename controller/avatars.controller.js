@@ -18,8 +18,6 @@ class Avatars {
         }
     }
     async GetAvatarByID(req, res, isLocal) {
-        const { avatar_id } = req.params;
-        console.log("avatar by id", avatar_id)
         const result = await Avatar.findOne({
             where: {
                 id: req.params ? req.params : req.body,
