@@ -27,6 +27,7 @@ class AuthController {
           );
           result.accesstoken = refreshResult;
         }
+        console.log("user after login\n",result)
         res.status(200).send(result)
       }
       else {
