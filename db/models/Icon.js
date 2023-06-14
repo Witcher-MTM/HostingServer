@@ -12,10 +12,6 @@ module.exports = function (sequelize) {
             type: Sequelize.STRING,
             allowNull: false
         },
-        image_color: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
         color: {
             type: Sequelize.STRING,
             allowNull: false

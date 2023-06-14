@@ -17,11 +17,10 @@ class IconController {
         }
     }
     async addIcon(req, res) {
-        const { image_link, image_color, color, category_id } = req.body
+        const { image_link, color, category_id } = req.body
         try {
             const result = await Icon.create({
                 image_link: image_link,
-                image_color: image_color,
                 color: color,
                 category_id: category_id,
             })
@@ -66,11 +65,10 @@ class IconController {
                         .status(400)
                         .send("Icon with id " + req.params.icon_id + " not found.")
                 } else {
-                    const { image_link, image_color, color, category_id } = req.body
+                    const { image_link, color, category_id } = req.body
                     Icon.update(
                         {
                             image_link: image_link ?? db.sequelize.literal("image_link"),
-                            image_color: image_color ?? db.sequelize.literal("image_color"),
                             color: color ?? db.sequelize.literal("color"),
                             category_id: category_id ?? db.sequelize.literal("category_id"),
                         },
